@@ -1,0 +1,31 @@
+---
+// src/pages/signup.astro
+import Layout from '../layouts/Layout.astro';
+import SignupForm from '../components/SignupForm.svelte';
+---
+
+<Layout title="Sign Up • Track Time">
+  <div class="min-h-screen bg-black flex items-center justify-center px-6 relative overflow-hidden">
+    <div class="absolute inset-0 bg-linear-to-br from-red-900 via-black to-blue-900"></div>
+    <div class="absolute inset-0 opacity-30"
+        style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0);
+                background-size: 60px 60px;">
+    </div>
+
+    <div class="relative z-10 w-full max-w-md">
+      <div class="text-center mb-12">
+        <h1 class="text-5xl md:text-6xl font-black tracking-tighter">
+          <span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span>
+        </h1>
+        <p class="text-gray-400 mt-3 text-lg">Join 50,000+ fans who never miss a race</p>
+      </div>
+
+      <SignupForm client:load />
+
+      <div class="text-center mt-8 text-gray-500 text-sm">
+        Already racing with us? 
+        <a href="/login" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold">Log in</a>
+      </div>
+    </div>
+  </div>
+</Layout>

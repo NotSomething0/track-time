@@ -1,0 +1,40 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="404 • Track Time">
+  <div class="relative min-h-screen flex items-center justify-center overflow-hidden bg-black">
+    <div class="absolute inset-0 bg-linear-to-br from-red-900 via-black to-blue-900 opacity-90">
+    </div>
+
+    <div class="relative z-10 text-center px-6 max-w-4xl mx-auto">
+      <div class="mb-8">
+        <h1 class="text-9xl md:text-[220px] font-black tracking-tighter leading-none">
+          <span class="bg-linear-to-r from-[#FF2800] via-[#FF8000] to-[#00A0DE] bg-clip-text text-transparent">
+            404
+          </span>
+        </h1>
+      </div>
+
+      <h2 class="text-4xl md:text-6xl font-black mb-6 text-white">
+        You've Hit the Barrier!
+      </h2>
+
+      <p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto leading-relaxed">
+        Looks like oversteer got the best of you.
+        <br> 
+        Even the best drivers DNF sometimes.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-6 justify-center items-center mt-12">
+        <a href="/" class="group bg-[#FF2800] hover:bg-[#ff451a] text-white font-bold text-lg px-10 py-5 rounded-full transition-all transform hover:scale-105 shadow-2xl flex items-center gap-3">
+          Get Back on Track
+        </a>
+
+        <a href="https://discord.gg/atFNFcuJA4" class="border-2 border-[#00A0DE] text-[#00A0DE] hover:bg-[#00A0DE]/10 font-bold text-lg px-10 py-5 rounded-full transition backdrop-blur-sm">
+          Contact the Engineers
+        </a>
+      </div>
+    </div>
+  </div>
+</Layout>

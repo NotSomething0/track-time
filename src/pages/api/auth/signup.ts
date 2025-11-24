@@ -3,12 +3,12 @@ export const prerender = false;
 import type { APIRoute } from "astro";
 import { supabase } from "../../../lib/supabase";
 
-export const POST: APIRoute = async ({ request, redirect }) => {
+export const POST: APIRoute = async ({ request, cookies, redirect }) => {
   const payload = await request.json();
   const email = payload.email;
   const password = payload.password;
 
-  if (email || password) {
+  if (!email || !password) {
     return new Response("Email and password are required", { status: 400 });
   }
 
@@ -21,5 +21,11 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     return new Response(error.message, { status: 500 });
   }
 
-  return redirect("/signin");
+  cookies.set('flash', "Please check your email to confirm your account.", {
+    path: "/login",
+    httpOnly: true,
+    maxAge: 60
+  })
+
+  return redirect("/login");
 };

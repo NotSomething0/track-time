@@ -23,8 +23,10 @@
         })
       });
 
-      if (response.redirected)
+      if (response.redirected) {
+        window.location.href = response.url;
         return;
+      }
 
       const message = await response.text();
       registrationError = message;
@@ -42,7 +44,7 @@
     <div class="animate-fade-in">
       <div class="mx-4 p-5 rounded-2xl bg-red-950/60 border border-red-500/50 backdrop-blur-sm shadow-2xl shadow-red-900/20">
         <div class="flex items-center justify-center gap-3">
-          <svg class="w-6 h-6 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <svg class="w-6 h-6 text-red-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" fill="none"/>
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/>
           </svg>
@@ -82,7 +84,7 @@
   >
     {#if loading}
       <svg class="animate-spin h-6 w-6" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" fill="none" stroke-dasharray="60" stroke-dashoffset="20"/></svg>
-      Revving up your account...
+      Reving up your account...
     {:else}
       Create Free Account
     {/if}

@@ -1,5 +1,5 @@
 <script lang="ts">
-  const REGISTER_URL = "/api/auth/register";
+  const REGISTER_URL = "/api/auth/signup";
   let email = $state('');
   let password = $state('');
   let loading = $state(false);

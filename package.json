@@ -16,5 +16,8 @@
     "svelte": "^5.43.2",
     "tailwindcss": "^4.1.16",
     "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@vite-pwa/astro": "^1.1.1"
   }
 }

@@ -1,12 +1,53 @@
 ---
-import Layout from "../layouts/Layout.astro";
-import Hero from "../components/Hero.svelte";
-import Features from "../components/Features.svelte";
-import CTA from "../components/CTA.svelte";
+import Layout from '../layouts/Layout.astro';
+import Features from '../components/Features.svelte';
+import Footer from "../components/Footer.astro";
 ---
 
 <Layout>
-	<Hero client:load />
-	<Features client:load />
-	<CTA client:load />
+	<header>
+		<nav class="absolute top-0 left-0 right-0 z-50 px-6 py-5 transition-all">
+			<div class="max-w-7xl mx-auto flex items-center justify-between">
+				<div class="text-4xl font-black tracking-tighter">
+					<span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span>
+				</div>
+
+				<div class="flex items-center gap-4">
+					<a href="/login" class="bg-[#FF2800] hover:bg-[#ff451a] text-white font-bold px-6 py-2 rounded-full transition shadow-lg md:px-8 md:py-3">
+						Login
+					</a>
+					<a href="/signup" class="bg-[#FF2800] hover:bg-[#ff451a] text-white font-bold px-6 py-2 rounded-full transition shadow-lg md:px-8 md:py-3">
+						Sign up
+					</a>
+				</div>
+			</div>
+		</nav>
+	</header>
+
+	<main>
+		<section id="hero" class="min-h-screen flex items-center justify-center">
+			<div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+				<h1 class="text-6xl md:text-8xl font-black text-[#FF8000] tracking-tighter mb-6">
+					Never Miss<br />
+					<span class="bg-linear-to-r from-[#FF2800] via-[#FF8000] to-[#00A0DE] bg-clip-text text-transparent">
+						Another Race
+					</span>
+				</h1>
+				<p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto">
+					One app for every motorsport series on 🌎
+					<br />
+					F1 • MotoGP • IndyCar • WEC • NASCAR • Formula E and more.
+				</p>
+				<div class="flex flex-col sm:flex-row gap-4 justify-center">
+					<a href="#features" class="border-2 border-[#00A0DE] text-[#00A0DE] hover:bg-[#00A0DE]/10 font-bold text-lg px-10 py-5 rounded-full transition">
+						See Features ↓
+					</a>
+				</div>
+			</div>
+		</section>
+
+		<Features />
+	</main>
+
+	<Footer />
 </Layout>

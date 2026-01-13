@@ -1,5 +1,4 @@
-<!-- src/components/Features.svelte -->
-<script>
+<script lang="ts">
   const features = $state([
     {
       title: "All Series. One Place.",
@@ -45,9 +44,9 @@
 
     <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
       {#each features as feature}
-        <div class="group bg-gradient-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-black border border-neutral-200 dark:border-neutral-800 rounded-2xl p-8 hover:border-[#00A0DE] transition-all hover:shadow-2xl hover:-translate-y-2">
+        <div class="group bg-linear-to-br from-neutral-50 to-neutral-100 dark:from-neutral-900 dark:to-black border border-neutral-200 dark:border-neutral-800 rounded-2xl p-8 hover:border-[#00A0DE] transition-all hover:shadow-2xl hover:-translate-y-2">
           <div class="text-5xl mb-4">{feature.icon}</div>
-          <h3 class="text-2xl font-bold mb-3 bg-gradient-to-r from-[#FF2800] to-[#FF8000] bg-clip-text text-transparent">
+          <h3 class="text-2xl font-bold mb-3 bg-linear-to-r from-[#FF2800] to-[#FF8000] bg-clip-text text-transparent">
             {feature.title}
           </h3>
           <p class="text-gray-600 dark:text-gray-400 leading-relaxed">

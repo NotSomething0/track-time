@@ -88,8 +88,4 @@
       Log In
     {/if}
   </button>
-
-  <div class="text-center">
-    <a href="/forgot" class="text-[#FF8000] hover:text-[#ffb84d] text-sm font-medium">Forgot password?</a>
-  </div>
 </form>

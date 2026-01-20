@@ -1,25 +1,21 @@
 ---
-export const prerender = false;
-
 import Layout from '../layouts/Layout.astro';
 import LoginForm from '../components/LoginForm.svelte';
 
-const flash = Astro.cookies.get('flash')?.value || null;
+const profile = await Astro.session?.get('profile');
+
+if (profile) {
+  return Astro.redirect('/dashboard', 302);
+}
+
+const flash: string|null = await Astro.session?.get('flash') || null;
 ---
 
 <Layout title="Login • Track Time">
-  <div class="min-h-screen bg-black flex items-center justify-center px-6 relative overflow-hidden">
-    <div class="absolute inset-0 bg-linear-to-br from-red-900 via-black to-blue-900"></div>
-    <div class="absolute inset-0 opacity-30"
-        style="background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.15) 1px, transparent 0);
-                background-size: 60px 60px;">
-    </div>
-
-    <div class="relative z-10 w-full max-w-md">
-      <div class="text-center mb-12">
-        <h1 class="text-5xl md:text-6xl font-black tracking-tighter">
-          <span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span>
-        </h1>
+  <div class="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
+    <div class="w-full max-w-md">
+      <div class="text-center mb-12 text-5xl md:text-6xl font-black tracking-tighter">
+        <span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span>
       </div>
 
       {flash && (
@@ -30,9 +26,10 @@ const flash = Astro.cookies.get('flash')?.value || null;
 
       <LoginForm client:load/>
 
-      <div class="text-center mt-8 text-gray-500 text-sm">
-        Don't have an account? 
-        <a href="/signup" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold">Sign up free</a>
+      <div class="text-center mt-6 text-gray-500 text-sm">
+        <a href="/forgot" class="text-[#FF8000] hover:text-[#ffb84d] text-sm font-medium">Forgot password?</a> <br>
+        <span>Don't have an account?</span> 
+        <a href="/signup" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold">Sign up</a>
       </div>
     </div>
   </div>

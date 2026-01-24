@@ -18,14 +18,9 @@ const { title } = Astro.props;
     <script src="/src/pwa.ts"></script>
     { pwaInfo && <Fragment set:html={pwaInfo.webManifest.linkTag} /> }
     <link rel="manifest" href="~/manifest.json">
-    <script is:inline>
-      // Dark mode detection
-      if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-        document.documentElement.classList.add('dark')
-      }
-    </script>
   </head>
-  <body class="bg-neutral-50 dark:bg-black text-gray-900 dark:text-gray-100 min-h-screen">
+  <body class="min-h-screen bg-linear-to-br from-red-700 via-black to-blue-900">
+    <div class="absolute inset-0" style="background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.30) 1px, transparent 0); background-size: 32px 32px;"></div>
     <slot />
   </body>
 </html>

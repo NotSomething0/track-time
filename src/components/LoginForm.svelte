@@ -1,5 +1,7 @@
 <script lang="ts">
   const LOGIN_URL = "/api/auth/login";
+  const { redirect } = $props();
+
   let email = $state('');
   let password = $state('');
   let loading = $state(false);
@@ -15,7 +17,8 @@
       const response = await fetch(LOGIN_URL, {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "x-redirect-to": redirect
         },
         body: JSON.stringify({
           "email": email,

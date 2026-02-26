@@ -1,0 +1,181 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import SeriesManager from "../../components/dashboard/SeriesManager.svelte";
+import { getTotalUsers } from "../../database/getTotalUsers";
+
+const actualUserCount = await getTotalUsers(Astro.session);
+
+const stats = {
+  totalUsers: { val: actualUserCount?.toString() || "N/A", trend: "+12%", up: true },
+  activeToday: { val: "389", trend: "+5%", up: true },
+  totalHours: { val: "14,892h", trend: "-2%", up: false },
+  avgDaily: { val: "4h 12m", trend: "+0.4%", up: true },
+};
+
+// Structured logs (ready for DB later)
+const logs = [
+  {
+    id: 1,
+    type: "user",
+    message: "New user registered",
+    meta: "Alex M.",
+    time: "2m ago",
+  },
+  {
+    id: 2,
+    type: "series",
+    message: "New motorsports series created",
+    meta: "IMSA 2026",
+    time: "12m ago",
+  },
+  {
+    id: 3,
+    type: "event",
+    message: "New event added",
+    meta: "Sebring 12h",
+    time: "32m ago",
+  },
+  {
+    id: 4,
+    type: "system",
+    message: "Database backup successful",
+    meta: null,
+    time: "1h ago",
+  },
+];
+
+// Log color styling
+const logColors: any = {
+  user: "bg-blue-500/10 text-blue-400",
+  series: "bg-orange-500/10 text-orange-400",
+  event: "bg-emerald-500/10 text-emerald-400",
+  system: "bg-slate-500/10 text-slate-400",
+};
+---
+
+<Layout title="Track Time Admin Dashboard">
+  <div class="flex min-h-screen bg-slate-950 text-slate-50 font-sans">
+    <main class="flex-1 p-4 sm:p-8 lg:p-12 overflow-y-auto">
+      <div class="max-w-7xl mx-auto">
+        
+        <!-- Header -->
+        <header class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12">
+          <div>
+            <div class="text-5xl font-black tracking-tighter uppercase italic">
+              <span class="text-orange-600">Track</span>
+              <span class="text-orange-400">Time</span>
+            </div>
+            <p class="mt-2 text-slate-400 font-medium">
+              System Overview & <span class="text-orange-500/80">Real-time Analytics</span>
+            </p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <button class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-xl text-sm font-semibold transition-all active:scale-95">
+              Last 7 days
+            </button>
+            <button class="px-5 py-2.5 bg-orange-600 hover:bg-orange-500 rounded-xl text-sm font-semibold shadow-lg shadow-orange-900/20 transition-all active:scale-95">
+              Export Report
+            </button>
+          </div>
+        </header>
+
+        <!-- Stats -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          {Object.entries({
+            "Total Users": { data: stats.totalUsers, color: "text-white" },
+            "Active Today": { data: stats.activeToday, color: "text-emerald-400" },
+            "Total Tracked": { data: stats.totalHours, color: "text-amber-400" },
+            "Avg / Day": { data: stats.avgDaily, color: "text-blue-400" }
+          }).map(([label, item]) => (
+            <div class="bg-slate-900/50 backdrop-blur-xl border border-white/5 p-6 rounded-2xl hover:border-white/10 transition-colors group">
+              <div class="flex justify-between items-start mb-2">
+                <p class="text-slate-400 text-xs uppercase tracking-widest font-bold">{label}</p>
+                <span class={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                  item.data.up
+                    ? "bg-emerald-500/10 text-emerald-500"
+                    : "bg-rose-500/10 text-rose-500"
+                }`}>
+                  {item.data.trend}
+                </span>
+              </div>
+              <p class={`text-3xl font-bold ${item.color}`}>{item.data.val}</p>
+            </div>
+          ))}
+        </section>
+
+        <!-- Admin Cards + Logs -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+
+          <!-- Admin Cards -->
+          <div class="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+            <a href="/admin/users" class="group p-1 rounded-2xl bg-linear-to-b from-white/10 to-transparent hover:from-orange-500/20 transition-all">
+              <div class="bg-slate-950 p-6 rounded-[calc(1rem-1px)] h-full">
+                <span class="text-3xl block mb-4 group-hover:scale-110 transition-transform origin-left">👥</span>
+                <h3 class="text-lg font-bold">Users</h3>
+                <p class="text-slate-500 text-sm mt-1">Manage accounts and permissions.</p>
+              </div>
+            </a>
+
+            <a href="/admin/projects" class="group p-1 rounded-2xl bg-linear-to-b from-white/10 to-transparent hover:from-emerald-500/20 transition-all">
+              <div class="bg-slate-950 p-6 rounded-[calc(1rem-1px)] h-full">
+                <span class="text-3xl block mb-4 group-hover:scale-110 transition-transform origin-left">📋</span>
+                <h3 class="text-lg font-bold">Projects</h3>
+                <p class="text-slate-500 text-sm mt-1">Manage active projects.</p>
+              </div>
+            </a>
+
+            <SeriesManager client:load />
+
+            <a href="/admin/settings" class="group p-1 rounded-2xl bg-linear-to-b from-white/10 to-transparent hover:from-slate-500/20 transition-all">
+              <div class="bg-slate-950 p-6 rounded-[calc(1rem-1px)] h-full">
+                <span class="text-3xl block mb-4 group-hover:scale-110 transition-transform origin-left">⚙️</span>
+                <h3 class="text-lg font-bold">Settings</h3>
+                <p class="text-slate-500 text-sm mt-1">Global app configurations.</p>
+              </div>
+            </a>
+
+          </div>
+
+          <!-- System Logs -->
+          <aside class="bg-slate-900/30 border border-white/5 rounded-3xl p-6">
+            <h3 class="text-sm font-bold uppercase tracking-widest text-slate-400 mb-6">
+              System Logs
+            </h3>
+
+            <div class="space-y-6">
+              {logs.map(log => (
+                <div class="flex gap-4">
+                  <div class="w-2 h-2 rounded-full bg-orange-500 mt-2 ring-4 ring-orange-500/10"></div>
+                  <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-1">
+                      <span class={`text-[10px] px-2 py-0.5 rounded-full font-bold ${logColors[log.type]}`}>
+                        {log.type.toUpperCase()}
+                      </span>
+                      <span class="text-[10px] text-slate-500 uppercase font-bold">
+                        {log.time}
+                      </span>
+                    </div>
+
+                    <p class="text-sm text-slate-200 leading-tight">
+                      {log.message}
+                      {log.meta && (
+                        <span class="font-bold text-white"> — {log.meta}</span>
+                      )}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <button class="w-full mt-8 py-3 border border-slate-800 rounded-xl text-xs font-bold text-slate-400 hover:text-white hover:bg-slate-800/50 transition-all">
+              View All Logs
+            </button>
+          </aside>
+
+        </div>
+      </div>
+    </main>
+  </div>
+</Layout>

@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import LoginForm from '../components/LoginForm.svelte';
 
 const profile = await Astro.session?.get('profile');
+const redirectTo = Astro.request.headers.get('x-redirect-to') || "";
 
 if (profile) {
   return Astro.redirect('/dashboard', 302);
@@ -24,7 +25,7 @@ const flash: string|null = await Astro.session?.get('flash') || null;
         </div>
       )}
 
-      <LoginForm client:load/>
+      <LoginForm redirect={redirectTo} client:load/>
 
       <div class="text-center mt-6 text-gray-500 text-sm">
         <a href="/forgot" class="text-[#FF8000] hover:text-[#ffb84d] text-sm font-medium">Forgot password?</a> <br>

@@ -3,25 +3,21 @@ import { getSupabaseClient } from "../../lib/supabase";
 
 export default async function(context: APIContext, next: MiddlewareNext) {
   if (context.url.pathname.startsWith('/admin')) {
+    context.request.headers.set('x-redirect-to', context.url.pathname);
+
     const supabase = getSupabaseClient(context.session);
 
-    if (!supabase) {
-      console.error("Supabase client failed to initialize in middleware");
+    if (!supabase)
       return context.rewrite('/login');
-    }
 
     const { data, error } = await supabase.auth.getClaims();
+    const user = data?.claims;
 
-    if (error || !data )
+    if (error || !user )
       return context.rewrite('/login');
 
-    if (!data.claims.app_metadata?.admin) {
-      return context.rewrite(new Request("/login", {
-      headers: {
-        "x-redirect-to": context.url.pathname
-      }
-    }));
-  }
+    if (!user.app_metadata?.admin)
+      return context.rewrite('/login');
   }
 
   return next();

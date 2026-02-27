@@ -1,8 +1,6 @@
 import { defineAction } from 'astro:actions';
 import { z } from 'astro/zod';
-import addSeries from '../database/addSeries';
-import getAllSeries from '../database/getAllSeries';
-import updateSeries from '../database/updateSeries';
+import * as db from '../database/series'
 
 export default {
     createSeries: defineAction({
@@ -11,12 +9,12 @@ export default {
             description: z.string()
         }),
         handler: async(input, context) => {
-            return await addSeries(context?.session, input);
+            return await db.addSeries(context?.session, input);
         }
     }),
     getAllSeries: defineAction({
         handler: async(_, context) => {
-            return await getAllSeries(context?.session);
+            return await db.getAllSeries(context?.session);
         }
     }),
     updateSeries: defineAction({
@@ -26,7 +24,13 @@ export default {
             description: z.string()
         }),
         handler: async(input, context) => {
-            return await updateSeries(context.session, input);
+            return await db.updateSeries(context.session, input);
+        }
+    }),
+    deleteSeries: defineAction({
+        input: z.string(),
+        handler: async(input, context) => {
+            return await db.deleteSeries(context.session, input);
         }
     })
 }

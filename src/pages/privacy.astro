@@ -1,0 +1,76 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout title="Privacy Policy • Track Time">
+  <header class="relative text-center pt-10">
+    <div class="text-4xl md:text-6xl font-black">
+      <span class="text-[#FF2800]">Privacy</span>
+      <span class="text-[#FF8000]">Policy</span>
+    </div>
+
+    <p class="pt-4 text-xl text-white">Last updated: January 31, 2025</p>
+  </header>
+
+  <main class="pt-10">
+    <section>
+      <p class="text-center text-2xl text-white font-bold">We <span class="text-red-500">DO NOT</span> track or sell your personal information.</p>
+      <p class="text-center text-white">However we do need to collect some personally identifiable information (PII) from you in order for our app to function. Below is an outline of those services and what information is collected</p>
+    </section>
+
+    <section class="text-center">
+      <h2 class="text-4xl font-black bg-linear-to-r from-[#FF8000] to-[#FF2800] bg-clip-text text-transparent">
+        Analytics
+      </h2>
+      <p class="max-w-3xl mx-auto text-white">
+        Analytics: We use privacy-friendly analytics (Plausible) to understand how visitors use our site—such as page views, scroll depth, traffic sources, and conversions—so we can improve performance and content. No cookies or invasive tracking are used.
+      </p>
+    </section>
+  </main>
+
+  <section class=" mx-auto">
+
+    <div class="grid gap-16 text-lg leading-relaxed">
+
+      <!-- Section 3 -->
+      <div class="text-center">
+        <h2 class="text-3xl md:text-4xl font-black mb-6 text-[#00A0DE]">Cloudflare for speed & security only</h2>
+        <p class="max-w-3xl mx-auto text-gray-300">
+          All Cloudflare tracking features are disabled. IPs are anonymized at the edge.<br />
+          Used strictly as a CDN and firewall — nothing more.
+        </p>
+      </div>
+
+      <!-- Section 4 -->
+      <div class="text-center">
+        <h2 class="text-3xl md:text-4xl font-black mb-6 text-[#FF2800]">What we actually store (account only)</h2>
+        <ul class="inline-block text-left space-y-3 text-gray-300 max-w-xl mx-auto">
+          <li>Email address (for login & reminders)</li>
+          <li>Display name (optional)</li>
+          <li>Your followed series & time zone</li>
+          <li>Encrypted password</li>
+        </ul>
+        <p class="mt-6 text-gray-400">Everything encrypted at rest in the EU.</p>
+      </div>
+
+      <!-- Section 5 -->
+      <div class="text-center">
+        <h2 class="text-3xl md:text-4xl font-black mb-6 text-[#00A0DE]">Your rights</h2>
+        <p class="max-w-3xl mx-auto text-gray-300">
+          Download your data • Delete your account instantly • Opt out of analytics in one click.<br />
+          You're in full control.
+        </p>
+      </div>
+
+      <!-- Contact -->
+      <div class="text-center">
+        <p class="text-xl text-gray-400">
+          Questions? Email <a href="mailto:privacy@trackti.me" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold underline">privacy@trackti.me</a><br />
+          A real human replies within 24h.
+        </p>
+      </div>
+    </div>
+  </section>
+  <Footer />
+</Layout>

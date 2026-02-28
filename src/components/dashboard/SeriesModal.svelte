@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import { scale } from 'svelte/transition';
+    import { slide } from 'svelte/transition';
 
     let id = $state<string|null>(null);
     let name = $state('');
@@ -55,7 +55,7 @@
 
         <!-- panel -->
         <div class="relative bg-slate-900 border border-white/10 rounded-3xl w-full max-w-md p-8 shadow-2xl"
-            transition:scale={{ duration: 200 }}>
+            transition:slide={{ duration: 200 }}>
             <div class="flex justify-between items-center mb-6">
                 <h2 class="text-2xl font-bold text-white">{title}</h2>
                 <button onclick={closeModal} class="text-slate-400 hover:text-white text-xl">✕</button>

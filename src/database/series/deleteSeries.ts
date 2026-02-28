@@ -1,5 +1,5 @@
 import type { AstroSession } from "astro";
-import { getSupabaseClient } from "../lib/supabase";
+import { getSupabaseClient } from "../../lib/supabase";
 
 export default async(session: AstroSession|undefined, seriesId: string): Promise<any> =>
 {

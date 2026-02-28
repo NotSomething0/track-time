@@ -1,5 +1,6 @@
 <script lang="ts">
-  const REGISTER_URL = "/api/auth/signup";
+  const REGISTRATION_URL = "/api/auth/signup";
+
   let email = $state('');
   let password = $state('');
   let loading = $state(false);
@@ -12,7 +13,7 @@
     registrationError = null;
 
     try {
-      const response = await fetch(REGISTER_URL, {
+      const response = await fetch(REGISTRATION_URL, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json"
@@ -28,9 +29,7 @@
         return;
       }
 
-      const message = await response.text();
-      registrationError = message;
-
+      registrationError = await response.text();
     } catch (exception) {
       registrationError = "A network error occured. Check your connection and try again."
     } finally {
@@ -60,7 +59,7 @@
     <input
       type="email"
       bind:value={email}
-      placeholder="email"
+      placeholder="Email"
       required
       class="w-full px-6 py-5 rounded-full bg-neutral-900/80 border border-neutral-700 focus:border-[#00A0DE] focus:outline-none text-white placeholder-gray-500 text-lg transition"
     />

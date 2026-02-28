@@ -1,0 +1,22 @@
+---
+import Sidebar from '../components/Sidebar.astro';
+import RaceDashboard from '../components/RaceDashboard.svelte';
+import SeriesSearch from '../components/SeriesSearch.svelte';
+import '../styles/global.css';
+---
+
+<html lang="en" class="bg-zinc-950 text-zinc-100">
+  <body class="flex min-h-screen">
+    <Sidebar />
+    <main class="flex-1 p-8">
+      <header class="mb-10 flex justify-between items-end">
+        <div>
+          <h1 class="text-4xl font-black tracking-tighter uppercase italic text-orange-500">Track Time</h1>
+        </div>
+        <SeriesSearch client:load />
+      </header>
+      
+      <RaceDashboard client:load />
+    </main>
+  </body>
+</html>

@@ -1,5 +1,4 @@
 <script lang="ts">
-
     let { followedSeries, upcomingRaces } = $props();
 
     function getNextRace() {
@@ -29,12 +28,12 @@
         </div>
 
         {#if nextRace}
-        <div class="text-right">
-            <p class="text-xs uppercase tracking-widest text-zinc-500">Next Event</p>
-            <p class="text-orange-500 font-bold">
-            {nextRace.event} – {getCountdown(nextRace.date)}
-            </p>
-        </div>
+            <div class="text-right">
+                <p class="text-xs uppercase tracking-widest text-zinc-500">Next Event</p>
+                <p class="text-orange-500 font-bold">
+                {nextRace.event} – {getCountdown(nextRace.date)}
+                </p>
+            </div>
         {/if}
     </div>
 </div>

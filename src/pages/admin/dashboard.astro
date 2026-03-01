@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import SeriesManager from "../../components/dashboard/SeriesManager.svelte";
+import SeriesManager from "../../components/admin/SeriesManager.svelte";
 import { getTotalUsers } from "../../database/getTotalUsers";
 
 const actualUserCount = await getTotalUsers(Astro.session);

@@ -1,22 +1,41 @@
 ---
+import Layout from '../layouts/Layout.astro';
 import Sidebar from '../components/Sidebar.astro';
-import RaceDashboard from '../components/RaceDashboard.svelte';
 import SeriesSearch from '../components/SeriesSearch.svelte';
+import DashboardHeader from '../components/DashboardHeader.svelte';
+import LiveFocusPanel from '../components/LiveFocusPanel.svelte';
+import UpcomingTimeline from '../components/UpcomingTimeline.svelte';
+import InsightsSection from '../components/InsightsSection.svelte';
 import '../styles/global.css';
----
 
-<html lang="en" class="bg-zinc-950 text-zinc-100">
-  <body class="flex min-h-screen">
-    <Sidebar />
-    <main class="flex-1 p-8">
+let followedSeries = ['F1', 'WEC', 'IMSA'];
+
+let races = [
+  { id: 1, series: 'F1', event: 'Monaco Grand Prix', date: '2026-05-24T13:00:00', alarm: false },
+  { id: 2, series: 'WEC', event: '24 Hours of Le Mans', date: '2026-06-13T14:00:00', alarm: true },
+  { id: 3, series: 'IMSA', event: 'Six Hours of The Glen', date: '2026-06-21T10:00:00', alarm: false }];
+
+let upcomingRaces = races.filter(r => followedSeries.includes(r.series));
+---
+<Layout>
+    <main>
+      <Sidebar client:load />
+
       <header class="mb-10 flex justify-between items-end">
         <div>
           <h1 class="text-4xl font-black tracking-tighter uppercase italic text-orange-500">Track Time</h1>
         </div>
-        <SeriesSearch client:load />
       </header>
-      
-      <RaceDashboard client:load />
+
+      <div class="space-y-8">
+        <DashboardHeader {followedSeries} {upcomingRaces} client:load />
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <LiveFocusPanel races={upcomingRaces} client:load />
+          <UpcomingTimeline races={upcomingRaces} client:load />
+        </div>
+
+        <InsightsSection />
+      </div>
     </main>
-  </body>
-</html>
+</Layout>

@@ -17,31 +17,28 @@ export default defineConfig({
   session: {
     ttl: ONE_HOUR
   },
-  integrations: [
-    svelte(),
-    AstroPWA({
-      devOptions: {
-        enabled: true
-      },
-      includeAssets: ['favicon.ico', '192.png', '512.png'],
-      manifest: {
-        name: "Track Time",
-        short_name: "TrackTime",
-        description: "Motorsport Tracking",
-        theme_color: "#ffffff",
-        icons: [
-          {
-            src: '192.png',
-            sizes: '192x192',
-            type: 'image/png'
-          },
-          {
-            src: '512.png',
-            sizes: '512x512',
-            type: 'image/png'
-          }
-        ]
-      }
-    })
-  ]
+  integrations: [svelte(), AstroPWA({
+    devOptions: {
+      enabled: true
+    },
+    includeAssets: ['favicon.ico', '192.png', '512.png'],
+    manifest: {
+      name: "Track Time",
+      short_name: "TrackTime",
+      description: "Motorsport Tracking",
+      theme_color: "#ffffff",
+      icons: [
+        {
+          src: '192.png',
+          sizes: '192x192',
+          type: 'image/png'
+        },
+        {
+          src: '512.png',
+          sizes: '512x512',
+          type: 'image/png'
+        }
+      ]
+    }
+  })]
 });

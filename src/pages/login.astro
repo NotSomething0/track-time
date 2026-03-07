@@ -20,7 +20,10 @@ const flash: string|null = await Astro.session?.get('flash') || null;
       </div>
 
       {flash && (
-        <div class="mb-8 p-5 rounded-2xl bg-green-900/40 border border-green-500/50 text-green-200 text-center font-medium animate-fade-in">
+        <div class={`mb-8 p-5 rounded-2xl border text-center font-medium animate-fade-in
+          ${flash.toLowerCase().includes('success') 
+            ? 'bg-green-900/40 border-green-500/50 text-green-200' 
+            : 'bg-red-900/40 border-red-500/50 text-red-200'}`}>
           <p>{flash}</p>
         </div>
       )}

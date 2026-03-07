@@ -1,0 +1,54 @@
+---
+import CountdownTimer from "./CountdownTimer.svelte";
+const nextEvent = {
+    name: "Italian Grand Prix",
+    track: "Autodromo Nazionale Monza",
+    eventTime: "2026-04-02T22:14:33Z",
+    series: "Formula 1",
+    stats: [
+        { label: "Track Length", value: "5.793 km" },
+        { label: "Fastest Lap", value: "1:21.046" },
+        { label: "Number of Laps", value: "53" }
+    ]
+};
+---
+
+<div class="w-full rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl shadow-xl overflow-hidden">
+    <!-- Header -->
+    <div class="flex justify-between items-start p-6 pb-4 gap-4 border-b border-white/5">
+        <div class="space-y-1">
+            <h2 class="text-xl font-bold text-white tracking-wide">
+                {nextEvent.name}
+            </h2>
+
+            <p class="text-sm text-gray-400">
+                {nextEvent.track}
+            </p>
+        </div>
+
+        <span class="text-xs px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 whitespace-nowrap">
+            {nextEvent.series}
+        </span>
+    </div>
+
+    <!-- Main Body -->
+    <div class="grid grid-cols-2 gap-6 p-6">
+        <div class="flex flex-col justify-center items-start space-y-2">
+            <p class="text-xs text-gray-400 uppercase tracking-wider">
+                COUNTDOWN
+            </p>
+
+            <div class="text-4xl md:text-5xl font-bold text-indigo-300 leading-none tracking-wider">
+                <CountdownTimer targetTime={nextEvent.eventTime} client:load />
+            </div>
+        </div>
+        <div class="space-y-4 border-l border-white/5 pl-6">
+            {nextEvent.stats.map(stat => (
+                <div class="flex justify-between text-sm">
+                    <span class="text-gray-400">{stat.label}</span>
+                    <span class="text-white font-medium">{stat.value}</span>
+                </div>
+            ))}
+        </div>
+    </div>
+</div>

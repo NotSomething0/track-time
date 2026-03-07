@@ -7,3 +7,20 @@ body {
         linear-gradient(to bottom right, #b91c1c, #000000, #1e3a8a);
     background-size: 32px 32px, 100% 100%;
 }
+
+.header-motorsports {
+    @apply relative overflow-hidden bg-gradient-to-r from-red-900 via-black to-blue-900;
+
+    /* Subtle racing grid feel */
+    background-image:
+        radial-gradient(circle at 1px 1px, rgba(255,255,255,0.12) 1px, transparent 0);
+    background-size: 28px 28px;
+}
+
+.card-hover {
+  @apply transition duration-300;
+}
+
+.card-hover:hover {
+  @apply -translate-y-1 shadow-xl bg-white/10;
+}

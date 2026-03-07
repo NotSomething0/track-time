@@ -6,15 +6,13 @@ export default async function(context: APIContext, next: MiddlewareNext) {
     context.request.headers.set('x-redirect-to', context.url.pathname);
 
     const supabase = getSupabaseClient(context.session);
-
-    if (!supabase)
-      return context.rewrite('/login');
-
     const { data, error } = await supabase.auth.getClaims();
     const user = data?.claims;
 
-    if (error || !user )
+    if (error || !user ) {
+      context.session?.set('flash', 'You need to login')
       return context.rewrite('/login');
+    }
 
     if (!user.app_metadata?.admin)
       return context.rewrite('/login');

@@ -2,6 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import Features from '../components/Features.svelte';
 import Footer from "../components/Footer.astro";
+import UserProfileButton from '../components/home/UserProfileButton.svelte';
+
+console.log('hereawdadadwadadawda')
+
+const profile = await Astro.session?.get('profile');
 ---
 
 <Layout>
@@ -12,14 +17,18 @@ import Footer from "../components/Footer.astro";
 					<span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span>
 				</div>
 
-				<div class="flex items-center gap-4">
-					<a href="/login" class="bg-[#FF2800] hover:bg-[#ff451a] text-white font-bold px-6 py-2 rounded-full transition shadow-lg md:px-8 md:py-3">
-						Login
-					</a>
-					<a href="/signup" class="bg-[#FF2800] hover:bg-[#ff451a] text-white font-bold px-6 py-2 rounded-full transition shadow-lg md:px-8 md:py-3">
-						Sign up
-					</a>
-				</div>
+				{profile ? (
+					<UserProfileButton client:idle />
+				) : (
+					<div class="flex items-center gap-4">
+						<a href="/login" class="bg-[#FF2800] hover:bg-[#ff451a] text-white font-bold px-6 py-2 rounded-full transition shadow-lg md:px-8 md:py-3">
+							Login
+						</a>
+						<a href="/signup" class="bg-[#FF2800] hover:bg-[#ff451a] text-white font-bold px-6 py-2 rounded-full transition shadow-lg md:px-8 md:py-3">
+							Sign up
+						</a>
+					</div>
+				)}
 			</div>
 		</nav>
 	</header>

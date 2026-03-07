@@ -1,110 +1,25 @@
 ---
-const navItems = [ { name: "Dashboard", icon: "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", href: "/dashboard", }, { name: "Schedule", icon: "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z", href: "/schedule", }, { name: "My Series", icon: "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", href: "/series", }, { name: "Settings", icon: "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z", href: "/settings", }, ];
-
-const currentPath = Astro.url.pathname;
-
-const baseLinkClasses =
-  "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group";
-
-const activeClasses =
-  "bg-orange-600/10 text-orange-500 border border-orange-600/20";
-
-const inactiveClasses = "text-zinc-400 hover:bg-zinc-900 hover:text-white";
+const menu = [
+    { label: "Dashboard", href: "#dashboard" },
+    { label: "Discover", href: "#discover" },
+    { label: "Sessions", href: "#sessions" },
+    { label: "Settings", href: "#settings" }
+];
 ---
-<aside id="sidebar" class="w-64 bg-zinc-950 border-r border-zinc-900 flex flex-col sticky top-0 h-screen transition-all duration-300 ease-in-out overflow-x-hidden">
-  <!-- Header -->
-  <div class="p-4 flex items-center justify-between">
-    <div class="flex items-center gap-3">
-      <div class="w-8 h-8 bg-orange-600 rounded-sm flex items-center justify-center font-black text-white italic">
-        T
-      </div>
 
-      <!-- Animated Logo Text -->
-      <span class="sidebar-text whitespace-nowrap transition-all duration-300 ease-in-out font-bold tracking-widest uppercase text-xs text-zinc-500">
-        Telemetry v1.0
-      </span>
-    </div>
+<aside class="w-64 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-6 sticky top-10 self-start shadow-xl">
+    <h2 class="text-xl font-bold text-white mb-8 tracking-wide">
+        Track Time
+    </h2>
 
-    <!-- Drawer Toggle Button -->
-    <button
-      id="sidebarToggle"
-      class="p-2 rounded-md hover:bg-zinc-800 text-zinc-400 hover:text-white transition z-10"
-    >
-      <!-- Hamburger Icon -->
-      <svg xmlns="http://www.w3.org/2000/svg"
-        class="w-5 h-5 transition-transform duration-300"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M4 6h16M4 12h16M4 18h16" />
-      </svg>
-    </button>
-  </div>
-
-  <!-- Navigation -->
-  <nav class="flex-1 px-3 space-y-2 mt-4 min-w-0">
-    {
-      navItems.map(({ name, icon, href }) => {
-        const isActive = currentPath === href;
-
-        return (
-          <a
-            href={href}
-            class:list={[
-              baseLinkClasses,
-              isActive ? activeClasses : inactiveClasses,
-            ]}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="w-5 h-5 shrink-0"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+    <nav class="space-y-3 text-sm">
+        {menu.map(item => (
+            <a
+                href={item.href}
+                class="block px-3 py-2 rounded-xl text-gray-300 hover:text-white hover:bg-white/10 transition active:scale-95"
             >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d={icon}
-              />
-            </svg>
-
-            <!-- Animated Text -->
-            <span class="sidebar-text whitespace-nowrap transition-all duration-300 ease-in-out">
-              {name}
-            </span>
-          </a>
-        );
-      })
-    }
-  </nav>
+                {item.label}
+            </a>
+        ))}
+    </nav>
 </aside>
-
-<script>
-  const sidebar = document.getElementById("sidebar");
-  const toggle = document.getElementById("sidebarToggle");
-  const texts = document.querySelectorAll(".sidebar-text");
-
-  toggle.addEventListener("click", () => {
-    const collapsed = sidebar.classList.contains("w-24");
-
-    // Toggle width
-    sidebar.classList.toggle("w-64");
-    sidebar.classList.toggle("w-24");
-
-    // Animate text
-    texts.forEach(text => {
-      if (!collapsed) {
-        text.style.opacity = "0";
-        text.style.width = "0px";
-        text.style.marginLeft = "0px";
-      } else {
-        text.style.opacity = "1";
-        text.style.width = "auto";
-        text.style.marginLeft = "";
-      }
-    });
-  });
-</script>

@@ -2,9 +2,11 @@
     let { show, closeModal, confirmDelete, seriesName }:
         {show:boolean, confirmDelete: () => void, closeModal: () => void, seriesName: string } 
     = $props();
+
+    let modal: HTMLDialogElement;
 </script>
 
-{#if show}
+<dialog bind:this={modal}>
     <div class="fixed inset-0 z-50 flex items-center justify-center">
         <!-- Backdrop -->
         <button
@@ -35,4 +37,4 @@
             </div>
         </div>
     </div>
-{/if}
+</dialog>

@@ -73,7 +73,12 @@
 
         if (error) return;
 
-        events = data ?? [];
+        if (data.length > 0) {
+            data.sort((eventA: Event, eventB: Event) =>
+                new Date(eventA.start_at).getTime() - new Date(eventB.start_at).getTime());
+        }
+
+        events = data;
     });
 </script>
 
@@ -109,13 +114,14 @@
         {/each}
     </div>
 
-    <!-- Controls Row (only when events exist) -->
-    <div class="flex items-center mt-6">
+    <!-- Controls Row -->
+    <div class="flex flex-col md:flex-row items-center mt-6 gap-4">
 
-        <div class="flex-1"></div>
+        <!-- Spacer (only useful on md+) -->
+        <div class="hidden md:block flex-1"></div>
 
         <!-- Pagination Controls -->
-        <div class="flex justify-center flex-1 space-x-4">
+        <div class="flex justify-center items-center flex-wrap gap-3 md:space-x-4">
             <button
                 onclick={prevPage}
                 disabled={currentPage === 1}
@@ -124,7 +130,7 @@
                 Previous
             </button>
 
-            <span class="text-gray-700 font-medium self-center">
+            <span class="text-gray-200 font-medium self-center">
                 Page {currentPage} of {totalPages}
             </span>
 
@@ -138,7 +144,7 @@
         </div>
 
         <!-- Create Event -->
-        <div class="flex justify-end flex-1">
+        <div class="flex justify-center md:justify-end md:flex-1">
             <button
                 onclick={() => (isNewEventModalOpen = true)}
                 class="px-4 py-2 bg-orange-600 hover:bg-orange-500 rounded-xl text-white transition"

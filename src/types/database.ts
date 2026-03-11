@@ -8,8 +8,18 @@ export interface Profile {
 export interface Event {
     id: string,
     name: string,
-    start_at: Date,
-    end_at: Date,
+    start_at: string,
+    end_at: string,
     series_id: string,
-    timezone: string
+    timezone: string,
+    track: string
+}
+
+export interface Series {
+    id: string,
+    name: string,
+    events: Event[],
+    next_event: null,
+    description: string,
+    followed_at: Date,
 }

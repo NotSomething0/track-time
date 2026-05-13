@@ -5,7 +5,7 @@ export default async(session: AstroSession | undefined, series_id: string): Prom
     const supabase = getSupabaseClient(session);
 
     const { data, error } = await supabase
-        .from('event')
+        .from('events')
         .select()
         .eq('series_id', series_id);
 

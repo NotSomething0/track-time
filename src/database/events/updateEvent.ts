@@ -12,7 +12,7 @@ export default async(session: AstroSession | undefined, event: Event): Promise<a
     const supabase = getSupabaseClient(session);
 
     const { data, error } = await supabase
-        .from('event')
+        .from('events')
         .upsert(event)
         .select()
         .single();

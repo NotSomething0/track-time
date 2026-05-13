@@ -4,7 +4,7 @@ import { getSupabaseClient } from '../../lib/supabase';
 export default async(session: AstroSession | undefined, event: any): Promise<any> => {    
     const supabase = getSupabaseClient(session);
     const { data, error } = await supabase
-        .from('event')
+        .from('events')
         .insert(event)
         .select()
         .single();

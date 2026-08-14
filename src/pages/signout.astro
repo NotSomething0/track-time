@@ -1,11 +1,22 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import SignOutEffect from '../components/SignoutEffect.svelte';
-
-const a = await fetch(new URL('/api/auth/signout', Astro.url));
-
-Astro.session?.destroy();
 ---
+
+<script>
+  import { actions } from "astro:actions";
+  import { navigate } from "astro:transitions/client";
+
+  const { error } = await actions.authentication.signOut();
+
+  // @TODO: Do something if we failed to signout idk what the error could even be
+  if (error) {
+    console.log('something wen\'t wrong while signing you out');
+  } else {
+    navigate('/')
+  }
+</script>
+
 <Layout title="Pit Stop - Signing Out">
   <main class="relative min-h-screen w-full overflow-hidden bg-zinc-950 flex items-center justify-center">
     <div class="absolute inset-0 z-0 opacity-20" 

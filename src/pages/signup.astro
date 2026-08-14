@@ -1,23 +1,97 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import SignupForm from '../components/SignupForm.svelte';
+
+const { data } = await Astro.locals.supabase.auth.getClaims();
+
+if (data?.claims)
+  return Astro.redirect('/home/dashboard');
 ---
 
+<script>
+  import { actions } from "astro:actions";
+
+  const SIGN_UP_FORM = document.getElementById('signUpForm') as HTMLFormElement;
+  const SIGN_UP_ALERT = document.getElementById('signUpAlert') as HTMLParagraphElement;
+  const SIGN_UP_BUTTON = document.getElementById('signUpButton') as HTMLFormElement;
+
+  let signUpButtonEnabled = true;
+
+  function toggleSignUpButton() {
+    signUpButtonEnabled = !signUpButtonEnabled;
+
+    SIGN_UP_BUTTON.disabled = !signUpButtonEnabled;
+    SIGN_UP_BUTTON.innerText = signUpButtonEnabled ? 'Signing up!' : 'Sign up!';
+    SIGN_UP_BUTTON.setAttribute('aria-busy', signUpButtonEnabled ? 'false' : 'true');
+  }
+
+  SIGN_UP_FORM.addEventListener('submit', async(event: SubmitEvent) => {
+    event.preventDefault();
+
+    toggleSignUpButton();
+
+    const SIGN_UP_DATA = new FormData(SIGN_UP_FORM);
+    const { error } = await actions.authentication.signUp(SIGN_UP_DATA);
+
+    if (error) {
+      SIGN_UP_ALERT.style.display = 'block';
+      SIGN_UP_ALERT.innerText = error.message;
+    } else {
+      SIGN_UP_ALERT.style.display = 'block';
+      SIGN_UP_ALERT.innerText = 'A confirmation link has been sent to your email.'
+    }
+
+    toggleSignUpButton();
+  });
+</script>
+
 <Layout title="Sign Up • Track Time">
-  <div class="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
-    <div class="relative z-10 w-full max-w-md">
-      <div class="text-center mb-12">
-        <h1 class="text-5xl md:text-6xl font-black tracking-tighter">
-          <span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span>
-        </h1>
-      </div>
-
-      <SignupForm client:load />
-
-      <div class="text-center mt-8 text-gray-500 text-sm">
-        Already racing with us? 
-        <a href="/login" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold">Log in</a>
-      </div>
+  <header class="p-8 flex justify-center md:justify-start">
+    <div class="text-4xl font-black italic tracking-tighter ">
+      <a href="/"><span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span></a>
     </div>
-  </div>
+  </header>
+  <main class="flex items-center justify-center">
+    <form id="signUpForm" class="w-full max-w-md px-6 py-8 bg-white rounded-xl shadow-lg">
+      <h2 class="text-2xl text-gray-900 mb-6 text-center font-black">Create an account</h2>
+
+      <p id="signUpAlert" class="hidden p-4 text-center rounded"></p>
+
+      <label for="email" class="text-sm font-medium text-gray-700 mb-2">
+        Email
+
+        <input
+          id="email"
+          type="email"
+          name="email"
+          autocomplete="username"
+          required
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#00A0DE] focus:outline-none mb-4"
+        />
+      </label>
+
+      <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+        Password
+
+        <input
+          id="password"
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          required
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#00A0DE] focus:outline-none mb-6"
+        />
+      </label>
+
+      <button
+        id="signUpButton"
+        class="w-full bg-[#FF2800] hover:bg-[#ff451a] disabled:bg-[#FF2800]/50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-lg transition"
+      >
+        Sign up!
+      </button>
+    </form>
+  </main>
+  <footer class="text-center py-6 text-gray-500 text-sm">
+    <span>Already have an account?</span> 
+    <a href="/login" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold pl-1">Login</a>
+  </footer>
 </Layout>

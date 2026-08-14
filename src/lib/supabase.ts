@@ -1,33 +1,45 @@
-import { createClient } from '@supabase/supabase-js';
-import type { AstroSession } from 'astro';
+import { createServerClient, parseCookieHeader } from "@supabase/ssr";
+import type { AuthError } from "@supabase/supabase-js";
+import type { APIContext } from "astro";
+import { ActionError, type ActionAPIContext } from "astro:actions";
 
-export const getSupabaseClient = (session: AstroSession | undefined) => {
-  return createClient(
-    import.meta.env.SUPABASE_URL,
-    import.meta.env.SUPABASE_PUB_KEY,
-    {
-      auth: {
-        autoRefreshToken: false,
-        storage: {
-          getItem: async (key: string) => {
-            return await session?.get(key) ?? null;
-          },
-          setItem: async (key: string, value: string) => {
-            try {
-              session?.set(key, value);
-            } catch {
-              console.log(`Failed to setItem ${key} ${value}`);
-            }
-          },
-          removeItem: async (key: string) => {
-            try {
-              session?.set(key, undefined);
-            } catch {
-              console.log(`Failed to removeItem ${key}`);
-            }
-          },
+export const getSupabaseClient = (context: APIContext | ActionAPIContext) => {
+    return createServerClient(
+        import.meta.env.PUBLIC_SUPABASE_URL,
+        import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+        {
+            cookies: {
+                getAll() {
+                    return parseCookieHeader(context.request.headers.get("Cookie") ?? "");
+                },
+                setAll(cookiesToSet: { name: string; value: string }[]) {
+                    cookiesToSet.forEach(({ name, value }) => {
+                            context.cookies.set(name, value, {
+                            path: "/",
+                            secure: import.meta.env.PROD,
+                        });
+                    });
+                },
+            },
         },
-      },
-    }
-  );
+    );
 };
+
+export function handleAuthError(error: AuthError) {
+    switch (error.code) {
+        case "weak_password":
+            throw new ActionError({
+                code: "UNPROCESSABLE_CONTENT",
+                message: error.message,
+            });
+        default:
+            console.log(
+                "An error occured while handling auth related shit that we don't handle directly",
+            );
+            console.log(error);
+            throw new ActionError({
+                code: "UNPROCESSABLE_CONTENT",
+                message: error.message,
+            });
+    }
+}

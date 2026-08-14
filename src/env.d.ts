@@ -1,5 +1,3 @@
-/// <reference types="vite-plugin-pwa/info" />
-
 interface ImportMetaEnv {
   readonly SUPABASE_URL: string
   readonly SUPABASE_PUB_KEY: string
@@ -16,12 +14,7 @@ interface SeriesData {
 }
 
 declare namespace App {
-  interface SessionData {
-    'sb-access-token': string,
-    'sb-refresh-token': string,
-    profile: null | undefined | {
-      user_id: string;
-      name: string;
-    };
-  }
+  interface Locals {
+    supabase: import('@supabase/supabase-js').SupabaseClient
+  };
 }

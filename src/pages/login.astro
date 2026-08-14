@@ -1,40 +1,102 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import LoginForm from '../components/LoginForm.svelte';
 
-const profile = await Astro.session?.get('profile');
-const redirectTo = Astro.request.headers.get('x-redirect-to') || "";
+const { data } = await Astro.locals.supabase.auth.getClaims();
 
-if (profile) {
-  return Astro.redirect('/dashboard', 302);
-}
+// We're already logged in send them to the dashboard
+if (data?.claims)
+  return Astro.redirect('/home/dashboard');
 
 const flash: string|null = await Astro.session?.get('flash') || null;
 ---
 
-<Layout title="Login • Track Time">
-  <div class="min-h-screen flex items-center justify-center px-6 relative overflow-hidden">
-    <div class="w-full max-w-md">
-      <div class="text-center mb-12 text-5xl md:text-6xl font-black tracking-tighter">
-        <span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span>
-      </div>
+<script>
+  import { actions } from "astro:actions";
+  import { navigate } from "astro:transitions/client";
+
+  const LOGIN_FORM = document.getElementById('loginForm') as HTMLFormElement;
+  const LOGIN_BUTTON = document.getElementById('loginButton') as HTMLButtonElement;
+
+  async function login() {
+    LOGIN_BUTTON.disabled = true;
+    LOGIN_BUTTON.textContent = 'Logging in...';
+    LOGIN_BUTTON.setAttribute('aria-busy', 'true');
+
+    const LOGIN_DATA = new FormData(LOGIN_FORM);
+    const { error } = await actions.authentication.signIn(LOGIN_DATA);
+
+    if (!error)
+      return navigate('/home/dashboard');
+
+    //TODO: Add flash message for errors
+
+    LOGIN_BUTTON.disabled = false;
+    LOGIN_BUTTON.textContent = 'Log In';
+    LOGIN_BUTTON.setAttribute('aria-busy', 'false');
+  }
+
+  LOGIN_FORM?.addEventListener('submit', async (event: SubmitEvent) => {
+    event.preventDefault();
+    await login();
+  });
+</script>
+
+<Layout title="Login | Track Time">
+  <header class="p-8 flex justify-center md:justify-start">
+    <div class="text-4xl font-black italic tracking-tighter ">
+      <a href="/"><span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span></a>
+    </div>
+  </header>
+  <main class="flex items-center justify-center">
+    <form id="loginForm" class="w-full max-w-md px-6 py-8 bg-white rounded-xl shadow-lg">
+      <h2 class="text-2xl text-gray-900 mb-6 text-center font-black">Welcome back!</h2>
 
       {flash && (
-        <div class={`mb-8 p-5 rounded-2xl border text-center font-medium animate-fade-in
-          ${flash.toLowerCase().includes('success') 
-            ? 'bg-green-900/40 border-green-500/50 text-green-200' 
-            : 'bg-red-900/40 border-red-500/50 text-red-200'}`}>
-          <p>{flash}</p>
-        </div>
+        <p class="mb-6 p-4 rounded-lg bg-red-100 border border-red-400 text-red-700 text-center">
+          {flash}
+        </p>
       )}
 
-      <LoginForm redirect={redirectTo} client:load/>
+      <label for="email" class="text-sm font-medium text-gray-700 mb-2">
+        Email
 
-      <div class="text-center mt-6 text-gray-500 text-sm">
-        <a href="/forgot" class="text-[#FF8000] hover:text-[#ffb84d] text-sm font-medium">Forgot password?</a> <br>
-        <span>Don't have an account?</span> 
-        <a href="/signup" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold">Sign up</a>
-      </div>
-    </div>
-  </div>
+        <input
+          autofocus
+          id="email"
+          type="email"
+          name="email"
+          autocomplete="username"
+          required
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#00A0DE] focus:outline-none mb-4"
+        />
+      </label>
+
+      <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+        Password
+
+        <input
+          id="password"
+          type="password"
+          name="password"
+          autocomplete="current-password"
+          required
+          class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-[#00A0DE] focus:outline-none mb-6"
+        />
+      </label>
+
+      <button
+        id="loginButton"
+        type="submit"
+        class="w-full bg-[#FF2800] hover:bg-[#ff451a] disabled:bg-[#FF2800]/50 disabled:cursor-not-allowed text-white font-bold py-3 rounded-lg transition"
+      >
+        Log In
+      </button>
+    </form>
+  </main>
+  <footer class="text-center py-6 text-gray-500 text-sm">
+    <a href="/forgot" class="text-[#FF8000] hover:text-[#ffb84d] font-medium">Forgot password?</a>
+    <span class="mx-2">|</span>
+    <span>Don't have an account?</span> 
+    <a href="/signup" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold pl-1">Sign up</a>
+  </footer>
 </Layout>

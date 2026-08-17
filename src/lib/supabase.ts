@@ -1,6 +1,6 @@
-import { createServerClient, parseCookieHeader } from "@supabase/ssr";
-import type { AuthError } from "@supabase/supabase-js";
 import type { APIContext } from "astro";
+import type { AuthError, PostgrestError } from "@supabase/supabase-js";
+import { createServerClient, parseCookieHeader } from "@supabase/ssr";
 import { ActionError, type ActionAPIContext } from "astro:actions";
 
 export const getSupabaseClient = (context: APIContext | ActionAPIContext) => {
@@ -41,5 +41,13 @@ export function handleAuthError(error: AuthError) {
                 code: "UNPROCESSABLE_CONTENT",
                 message: error.message,
             });
+    }
+}
+
+export function handlePostgrestError(error: PostgrestError) {
+    switch (error.code) {
+        default:
+            console.error('A PostgrestError has occured that we don\'t handle yet', error)
+            throw new ActionError({ code: 'INTERNAL_SERVER_ERROR' })
     }
 }

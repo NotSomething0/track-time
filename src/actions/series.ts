@@ -13,11 +13,9 @@ export default {
         }
     }),
     getSeriesById: defineAction({
-        input: z.object({
-            id: z.uuid()
-        }),
+        input: z.uuid(),
         handler: async(input, context) => {
-            return await db.getSeriesById(context, input.id);
+            return await db.getSeriesById(context, input);
         }
     }),
     getAllSeries: defineAction({
@@ -35,8 +33,8 @@ export default {
             return await db.updateSeries(context, input);
         }
     }),
-    deleteSeries: defineAction({
-        input: z.string(),
+    deleteSeriesById: defineAction({
+        input: z.uuid(),
         handler: async(input, context) => {
             return await db.deleteSeriesById(context, input);
         }

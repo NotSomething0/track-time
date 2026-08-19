@@ -1,44 +1,28 @@
 <script lang="ts">
+    import type { Series } from "../../../../../types/database";
     import { onMount } from "svelte";
     import { actions } from "astro:actions";
-    import SeriesManagerList from './SeriesManagerList.svelte';
     import SeriesModal from "../../../SeriesModal.svelte";
     import DeleteConfirmationModal from "../../../DeleteConfirmationModal.svelte";
 
-    let seriesManagerDialog: HTMLDialogElement;
+    let loadingSeries = $state(true);
+    let showAddSeriesModal = $state(false);
+    let showDeleteConfirmationModal = $state(false);
 
-    let showAddModal = $state(false);
+    let allSeries = $state<Series[]>([]);
+    let filteredSeries = $state<Series[]>([]);
+    let seriesToDelete = $state<Series|null>(null);
+    let editingSeries: Series|null = $state(null);
+    let addingSeries = $state<Series|null>(null);
+
     let searchTerm = $state("");
 
-    let series = $state<SeriesData[]>([]);
-    let seriesFiltered = $state<SeriesData[] | []>([]);
-    let seriesToDelete = $state<string | null>(null);
-
-    let addingSeries = $state({ id: null, name: "", description: "" });
-
     $effect(() => {
-        seriesFiltered = series.filter((series) =>
+        filteredSeries = allSeries.filter((series) =>
             series.name.toLowerCase().includes(searchTerm.toLowerCase()),
         );
     });
 
-    // Confirm the delete of a series
-    async function confirmDelete() {
-        if (!seriesToDelete) return;
-
-        const { error } = await actions.series.deleteSeries(seriesToDelete);
-
-        if (error) {
-            console.error("Failed to delete series:", error);
-            return;
-        }
-
-        // Remove deleted series from the list - create new array reference
-        series = series.filter((s) => s.id !== seriesToDelete);
-        seriesToDelete = null; // Reset seriesToDelete after deletion
-    }
-
-    // Create a new series
     async function createNewSeries(name: string, description: string) {
         const { data, error } = await actions.series.createSeries({
             name,
@@ -50,11 +34,23 @@
             return;
         }
 
-        // Create new array reference instead of mutating
-        series = [...series, data];
+        allSeries = [...allSeries, data];
     }
 
-    // Update an existing series
+    async function onSeriesDeleted() {
+        if (!seriesToDelete) return;
+
+        const { error } = await actions.series.deleteSeriesById(seriesToDelete.id);
+
+        if (error) {
+            console.error("Failed to delete series:", error);
+            return;
+        }
+
+        allSeries = allSeries.filter((series) => series.id !== seriesToDelete?.id);
+        seriesToDelete = null;
+    }
+
     async function updateSeries(seriesData: any) {
         const { data, error } = await actions.series.updateSeries(seriesData);
 
@@ -63,81 +59,102 @@
             return;
         }
 
-        // Update the series in the list - create new array reference
-        series = series.map((s) => (s.id === data.id ? { ...s, ...data } : s));
+        allSeries = allSeries.map((s) => (s.id === data.id ? { ...s, ...data } : s));
     }
 
-    // On mount, fetch all series
     onMount(async () => {
         const { data, error } = await actions.series.getAllSeries();
 
         if (error) {
+            loadingSeries = false;
             console.error("Failed to get series data");
             return;
         }
 
-        series = data; // Set the fetched series data
+        allSeries = data;
+        loadingSeries = false;
     });
-
-    function seriesSaved(series) {
-        updateSeries(series)
-    }
 </script>
 
-<button
-    onclick={() => (seriesManagerDialog.showModal())}
-    class="w-full h-full p-1 rounded-2xl border-white
-            bg-linear-to-b from-white/10
-            hover:from-orange-500/20 text-left"
-    >
-    <div
-        class="bg-slate-950 p-6 rounded-[calc(1rem-1px)] h-full flex flex-col justify-center"
-    >
-        <h3 class="text-lg font-bold text-white">Manage Series 🏁</h3>
-        <p class="text-slate-500 text-sm mt-1">
-        Manage motorsports series & events.
-        </p>
-    </div>
-</button>
+<div class="bg-[#111111] border border-white/10 h-screen">
+    <div class="p-6 max-h-[85vh] flex flex-col">
+        <h1 class="text-xl font-bold text-white mb-2">Series Manager</h1>
 
-<dialog bind:this={seriesManagerDialog}>
-    <!-- Container -->
-    <div class="fixed inset-0 flex items-center justify-center">
-        <!-- Backdrop -->
-        <button class="absolute inset-0 backdrop-blur-sm" onclick={() => (seriesManagerDialog.close())} aria-label="Close Seires Manager"></button>
-        <!-- Panel -->
-        <div class="relative bg-slate-900 border border-white/10 rounded-3xl w-full max-w-2xl p-8 shadow-2xl">
-            <!-- Panel Header -->
-            <div class="flex justify-between mb-6">
-                <!-- Panel Header Title -->
-                <h2 class="text-2xl font-bold text-white">Series Manager</h2>
-                <!-- Panel Header Close Button -->
-                <button onclick={() => seriesManagerDialog.close()} class="text-red-700 hover:text-red-500" aria-label="Close Series Manager">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-            </div>
+        <input
+            bind:value={searchTerm}
+            placeholder="Search series..."
+            class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-gray-500 mb-4 focus:outline-none focus:border-[#FF8000]/50 transition"
+        />
 
-            <!-- Series Search -->
-            <input bind:value={searchTerm} placeholder="Search series..." class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white mb-4"/>
+        <div class="space-y-3 h-64 overflow-y-auto pr-2">
+            {#if loadingSeries}
+                <p class="text-slate-400 text-sm text-center py-6">
+                    Loading Series...
+                </p>
+            {:else if allSeries.length < 1 && !loadingSeries}
+                <p class="text-slate-400 text-sm text-center py-6">
+                    No series found.
+                </p>
+            {:else}
+                {#each filteredSeries as series (series.id)}
+                    <div class="relative group">
+                        <!-- Row -->
+                        <button
+                            onclick={() => editingSeries = series}
+                            class="w-full flex justify-between items-center
+                                    bg-slate-800/40 hover:bg-slate-700/60
+                                    border border-slate-700/60 hover:border-slate-500
+                                    px-4 py-3 rounded-xl
+                                    transition-all duration-200
+                                    cursor-pointer
+                                    text-white"
+                        >
+                            <span>{series.name}</span>
+                        </button>
 
-            <!-- Series List -->
-            <SeriesManagerList series={seriesFiltered} onSeriesSaved={seriesSaved}></SeriesManagerList>
-
-            <!-- Add Series Button -->
-            <button onclick={() => { showAddModal = true; }} class="mt-2 px-4 py-2 bg-orange-600 hover:bg-orange-700 rounded-xl font-semibold text-white">
-                Add Series
-            </button>
+                        <button
+                            onclick={() => {
+                                seriesToDelete = series;
+                                showDeleteConfirmationModal = true;
+                            }}
+                            class="absolute right-4 top-1/2 -translate-y-1/2 text-rose-400 text-sm opacity-0 group-hover:opacity-100 transition"
+                        >
+                            Delete
+                        </button>
+                    </div>
+                {/each}
+            {/if}
         </div>
-    </div>
-</dialog>
 
-<!-- Add Series Modal -->
+        <button
+            onclick={() => { showAddSeriesModal = true; }}
+            aria-label="Add new series"
+            class="w-full py-3 rounded-xl bg-linear-to-r from-[#FF2800] to-[#FF8000] hover:from-[#ff451a] hover:to-[#ff9f33] text-white font-bold transition shadow-lg shadow-[#FF2800]/20"
+        >
+            + Add Series
+        </button>
+    </div>
+</div>
+
+<DeleteConfirmationModal 
+    show={showDeleteConfirmationModal} 
+    seriesToDelete={seriesToDelete} 
+    confirmDelete={onSeriesDeleted} 
+    closeModal={() => showDeleteConfirmationModal = false} 
+/>
+
+<SeriesModal 
+    seriesData={editingSeries} 
+    isSeriesModalOpen={editingSeries != null} 
+    isEdit={true} 
+    seriesSaved={updateSeries} 
+    closeModal={() => editingSeries = null}
+/>
+
 <SeriesModal
     seriesData={addingSeries}
-    show={showAddModal}
-    closeModal={() => (showAddModal = false)}
+    isSeriesModalOpen={showAddSeriesModal}
+    closeModal={() => (showAddSeriesModal = false)}
     isEdit={false}
     seriesSaved={createNewSeries}
 />

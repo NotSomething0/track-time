@@ -1,27 +1,29 @@
-import type { AstroSession } from "astro";
-import { getSupabaseClient } from "../../lib/supabase";
+import { handleAuthError, handlePostgrestError } from "$lib/supabase";
+import { ActionError, type ActionAPIContext } from "astro:actions";
 
-export default async(session: AstroSession|undefined): Promise<any> =>
+export default async(context: ActionAPIContext) =>
 {
-    if (!session)
-        console.log('no session');
+    const { data: claimsData, error: claimsError} = await context.locals.supabase.auth.getClaims();
 
-    const supabase = getSupabaseClient(session);
+    if (claimsError)
+        handleAuthError(claimsError);
 
-    if (!supabase) {
-        console.log('supabase session error')
-        return {};
-    }
+    if (!claimsData?.claims?.app_metadata?.admin)
+        throw new ActionError({ code: 'UNAUTHORIZED', message: 'You are not authorized to perform this action'});
 
-    const { data, error } = await supabase
+    const { data, error } = await context.locals.supabase
         .from('series')
-        .select();
+        .select(`
+            id, 
+            name, 
+            description,
+            next_event (
+                *
+            )
+        `);
 
-
-    if (error) {
-        console.log('An error occured while trying to execute the addSeries query', error)
-        return {};
-    }
+    if (error)
+        handlePostgrestError(error);
 
     return data;
 }

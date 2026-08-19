@@ -9,12 +9,20 @@ export default {
             description: z.string()
         }),
         handler: async(input, context) => {
-            return await db.addSeries(context?.session, input);
+            return await db.addSeries(context, input);
+        }
+    }),
+    getSeriesById: defineAction({
+        input: z.object({
+            id: z.uuid()
+        }),
+        handler: async(input, context) => {
+            return await db.getSeriesById(context, input.id);
         }
     }),
     getAllSeries: defineAction({
         handler: async(_, context) => {
-            return await db.getAllSeries(context?.session);
+            return await db.getAllSeries(context);
         }
     }),
     updateSeries: defineAction({
@@ -24,13 +32,13 @@ export default {
             description: z.string()
         }),
         handler: async(input, context) => {
-            return await db.updateSeries(context.session, input);
+            return await db.updateSeries(context, input);
         }
     }),
     deleteSeries: defineAction({
         input: z.string(),
         handler: async(input, context) => {
-            return await db.deleteSeries(context.session, input);
+            return await db.deleteSeriesById(context, input);
         }
     })
 }

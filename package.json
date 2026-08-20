@@ -3,6 +3,7 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "format": "prettier --write .",
     "dev": "bunx --bun astro dev",
     "build": "astro build",
     "preview": "astro preview",
@@ -25,6 +26,9 @@
     "@lucide/svelte": "^1.32.0",
     "bits-ui": "^2.18.1",
     "clsx": "^2.1.1",
+    "prettier": "^3.9.6",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-svelte": "^4.1.1",
     "shadcn-svelte": "^1.5.0",
     "tailwind-merge": "^3.6.0",
     "tailwind-variants": "^3.3.1",

@@ -5,8 +5,8 @@ import { ActionError, type ActionAPIContext } from "astro:actions";
 
 export const getSupabaseClient = (context: APIContext | ActionAPIContext) => {
     return createServerClient(
-        import.meta.env.PUBLIC_SUPABASE_URL,
-        import.meta.env.PUBLIC_SUPABASE_PUBLISHABLE_KEY,
+        import.meta.env.SUPABASE_URL,
+        import.meta.env.SUPABASE_PUBLISHABLE_KEY,
         {
             cookies: {
                 getAll() {

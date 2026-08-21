@@ -114,7 +114,7 @@
           </tr>
         {:else}
           {#each filteredSeries as series (series.id)}
-            <tr class="border-t border-white/5 hover:bg-white/5">
+            <tr class="border-t border-white/5">
               <th scope="row" class="font-medium text-white">
                 {series.name}
               </th>
@@ -128,7 +128,7 @@
               <td class="text-center text-white"
                 >{series.status}</td
               >
-              <td class=" flex flex-col">
+              <td class="flex flex-col">
                 <button
                   onclick={() => editingSeries = series}
                   class="text-blue-400 hover:text-blue-300 cursor-pointer"

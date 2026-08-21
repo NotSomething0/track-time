@@ -83,31 +83,28 @@
           </tr>
         {:else}
           {#each profiles as user (user.user_id)}
-            <tr
-              class="border-t border-white/5 hover:bg-white/5 transition-colors"
-            >
-              <td class="p-4">
-                <div class="font-medium text-white">{user.username}</div>
-              </td>
-              <td class="p-4">
+            <tr class="border-t border-white/5">
+              <th class="font-medium text-white">
+                {user.username}
+              </th>
+              <td class="text-center">
                 <span
                   class="px-2 py-1 rounded-md bg-[#00A0DE]/10 text-[#00A0DE] text-xs border border-[#00A0DE]/20"
                 >
                   {user.is_admin ? "Yes" : "No"}
                 </span>
               </td>
-              <td class="p-4 text-sm text-wrap text-gray-500">{user.user_id}</td
-              >
-              <td class=" flex flex-col">
+              <td class="text-center">{user.user_id}</td>
+              <td class="flex flex-col items-center">
                 <button
                   onclick={() => openEditUserModal(user)}
-                  class="text-[#00A0DE] hover:text-white"
+                  class="text-white cursor-pointer bg-blue-600 hover:bg-blue-700 rounded-md px-8 py-2 m-2"
                 >
                   Edit
                 </button>
                 <button
                   onclick={() => deleteUser(user.user_id)}
-                  class="text-red-400 hover:text-red-300"
+                  class="text-white cursor-pointer bg-red-500 hover:bg-red-600 rounded-md px-5 py-2 mb-2"
                 >
                   Delete
                 </button>

@@ -125,19 +125,17 @@
                   {series.category}
                 </span>
               </td>
-              <td class="text-center text-white"
-                >{series.status}</td
-              >
-              <td class="flex flex-col">
+              <td class="text-center text-white">{series.status}</td>
+              <td class="flex flex-col items-center">
                 <button
-                  onclick={() => editingSeries = series}
-                  class="text-blue-400 hover:text-blue-300 cursor-pointer"
+                  onclick={() => (editingSeries = series)}
+                  class="text-white cursor-pointer bg-blue-600 hover:bg-blue-700 rounded-md px-8 py-2 m-2"
                 >
                   Edit
                 </button>
                 <button
-                  onclick={() => showDeleteConfirmationModal = true}
-                  class="text-red-400 hover:text-red-300 cursor-pointer"
+                  onclick={() => (showDeleteConfirmationModal = true)}
+                  class="text-white cursor-pointer bg-red-500 hover:bg-red-600 rounded-md px-5 py-2 mb-2"
                 >
                   Delete
                 </button>

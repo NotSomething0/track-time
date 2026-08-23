@@ -77,8 +77,14 @@
       <tbody class="text-gray-200">
         {#if loadingProfiles}
           <tr>
-            <td colspan="4" class="p-3 text-center text-zinc-400">
+            <td colspan="4" class="p-3 text-center text-white border-t border-white/5">
               Loading profiles...
+            </td>
+          </tr>
+        {:else if profiles.length < 1}
+          <tr>
+            <td colspan="4" class="p-3 text-center text-white border-t border-white/5">
+              No profiles could be found, try adjusting your filter settings.
             </td>
           </tr>
         {:else}

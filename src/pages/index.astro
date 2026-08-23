@@ -1,62 +1,132 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Features from '../components/Features.svelte';
-import Footer from "../components/Footer.astro";
-import UserProfileButton from '../components/home/UserProfileButton.svelte';
+import Layout from "../layouts/Layout.astro";
+import Features from "../components/Features.svelte";
 
-console.log('hereawdadadwadadawda')
-
-const profile = await Astro.session?.get('profile');
+//const profile = await Astro.session?.get("profile");
 ---
 
-<Layout>
-	<header>
-		<nav class="absolute top-0 left-0 right-0 z-50 px-6 py-5 transition-all">
-			<div class="max-w-7xl mx-auto flex items-center justify-between">
-				<div class="text-4xl font-black tracking-tighter">
-					<span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span>
-				</div>
+<Layout title="Track Time | Never Miss Another Race">
+  <header class="bg-black p-8">
+    <nav class="flex justify-between items-center">
+      <a href="/" class="text-4xl font-black italic tracking-tighter">
+        <span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]"
+          >TIME</span
+        >
+      </a>
 
-				{profile ? (
-					<UserProfileButton client:idle />
-				) : (
-					<div class="flex items-center gap-4">
-						<a href="/login" class="bg-[#FF2800] hover:bg-[#ff451a] text-white font-bold px-6 py-2 rounded-full transition shadow-lg md:px-8 md:py-3">
-							Login
-						</a>
-						<a href="/signup" class="bg-[#FF2800] hover:bg-[#ff451a] text-white font-bold px-6 py-2 rounded-full transition shadow-lg md:px-8 md:py-3">
-							Sign up
-						</a>
-					</div>
-				)}
-			</div>
-		</nav>
-	</header>
+      <div class="flex items-center gap-3">
+        <a
+          href="/login"
+          class="bg-gradient-to-r fro`m-[#FF2800] to-[#FF8000] hover:opacity-90 text-white font-bold px-5 py-2.5 rounded-xl transition text-sm shadow-md shadow-[#FF2800]/20"
+        >
+          Sign in
+        </a>
+        <a
+          href="/signup"
+          class="bg-gradient-to-r from-[#FF2800] to-[#FF8000] hover:opacity-90 text-white font-bold px-5 py-2.5 rounded-xl transition text-sm shadow-md shadow-[#FF2800]/20"
+        >
+          Sign up
+        </a>
+      </div>
+    </nav>
+  </header>
+  <main>
+    <section class="flex items-center justify-center min-h-[60vh] bg-black">
+      <div class="max-w-4xl text-center relative">
+        <h1 class="text-7xl md:text-8xl font-black tracking-tight text-white">
+          Never Miss Another Race
+        </h1>
 
-	<main>
-		<section id="hero" class="min-h-screen flex items-center justify-center">
-			<div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
-				<h1 class="text-6xl md:text-8xl font-black text-[#FF8000] tracking-tighter mb-6">
-					Never Miss<br />
-					<span class="bg-linear-to-r from-[#FF2800] via-[#FF8000] to-[#00A0DE] bg-clip-text text-transparent">
-						Another Race
-					</span>
-				</h1>
-				<p class="text-xl md:text-2xl text-gray-300 mb-10 max-w-2xl mx-auto">
-					One app for every motorsport series on 🌎
-					<br />
-					F1 • MotoGP • IndyCar • WEC • NASCAR • Formula E and more.
-				</p>
-				<div class="flex flex-col sm:flex-row gap-4 justify-center">
-					<a href="#features" class="border-2 border-[#00A0DE] text-[#00A0DE] hover:bg-[#00A0DE]/10 font-bold text-lg px-10 py-5 rounded-full transition">
-						See Features ↓
-					</a>
-				</div>
-			</div>
-		</section>
+        <p class="mt-8 text-xl text-gray-300 max-w-lg mx-auto pl-6">
+          The ultimate motorsport schedule aggregator. Track every race, every
+          series, everywhere.
+        </p>
+      </div>
+    </section>
 
-		<Features />
-	</main>
+    <Features />
+  </main>
+  <footer class="bg-[#040404] border-t border-zinc-900">
+    <div class="py-16 px-6 max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+        <div class="col-span-1 md:col-span-2">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-lg font-black tracking-tighter italic">
+              <span class="text-[#FF2800]">TRACK</span><span
+                class="text-[#FF8000]">TIME</span
+              >
+            </span>
+          </div>
+          <p class="text-zinc-500 text-sm leading-relaxed max-w-sm">
+            Engineered for motorsport purists. Aggregating practice, qualifying,
+            and race schedules down to precise telemetry windows.
+          </p>
+          <p class="text-xs text-zinc-600 mt-8">
+            © 2026 Track Time. All rights reserved. All trademarks are property
+            of their respective owners in the US and other countries.
+          </p>
+        </div>
 
-	<Footer />
+        <div>
+          <h4
+            class="text-xs font-black text-zinc-400 mb-4 uppercase tracking-widest"
+          >
+            Platform
+          </h4>
+          <ul class="space-y-3 text-zinc-500 text-sm font-medium">
+            <li>
+              <a href="#features" class="hover:text-white transition"
+                >Features</a
+              >
+            </li>
+            <li>
+              <a href="/login" class="hover:text-white transition"
+                >Dashboard Link</a
+              >
+            </li>
+            <li>
+              <a href="/privacy" class="hover:text-white transition"
+                >Privacy Policy</a
+              >
+            </li>
+            <li>
+              <a href="/terms" class="hover:text-white transition"
+                >Terms of Service</a
+              >
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h4
+            class="text-xs font-black text-zinc-400 mb-4 uppercase tracking-widest"
+          >
+            Connect
+          </h4>
+          <ul class="space-y-3 text-zinc-500 text-sm font-medium">
+            <li>
+              <a
+                href="https://x.com/tracktimeapp"
+                target="_blank"
+                class="hover:text-[#FF8000] transition">Twitter / X</a
+              >
+            </li>
+            <li>
+              <a
+                href="https://instagram.com/tracktimeapp"
+                target="_blank"
+                class="hover:text-[#FF8000] transition">Instagram</a
+              >
+            </li>
+            <li>
+              <a
+                href="mailto:hello@tracktime.app"
+                class="hover:text-[#FF2800] transition">Support Desk</a
+              >
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </footer>
 </Layout>

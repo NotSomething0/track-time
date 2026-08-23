@@ -15,7 +15,9 @@ export default async(context: ActionAPIContext) =>
         .from('series')
         .select(`
             id, 
-            name, 
+            name,
+            status,
+            category,
             description,
             next_event (
                 *

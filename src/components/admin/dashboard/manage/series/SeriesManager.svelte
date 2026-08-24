@@ -3,7 +3,7 @@
   import { onMount } from "svelte";
   import { actions } from "astro:actions";
   import SeriesModal from "../../../SeriesModal.svelte";
-  import DeleteConfirmationModal from "../../../DeleteConfirmationModal.svelte";
+  import DeleteConfirmationModal from "./DeleteConfirmationModal.svelte";
 
   let loadingSeries = $state(true);
   let showAddSeriesModal = $state(false);
@@ -134,7 +134,10 @@
                   Edit
                 </button>
                 <button
-                  onclick={() => (showDeleteConfirmationModal = true)}
+                  onclick={() => {
+                    seriesToDelete = series; 
+                    showDeleteConfirmationModal = true;
+                  }}
                   class="text-white cursor-pointer bg-red-500 hover:bg-red-600 rounded-md px-5 py-2 mb-2"
                 >
                   Delete
@@ -160,7 +163,7 @@
 
 <DeleteConfirmationModal
   show={showDeleteConfirmationModal}
-  {seriesToDelete}
+  seriesToDelete={seriesToDelete}
   confirmDelete={onSeriesDeleted}
   closeModal={() => (showDeleteConfirmationModal = false)}
 />

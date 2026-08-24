@@ -7,7 +7,6 @@
 
   let loadingSeries = $state(true);
   let showAddSeriesModal = $state(false);
-  let showDeleteConfirmationModal = $state(false);
 
   let allSeries = $state<Series[]>([]);
   let filteredSeries = $state<Series[]>([]);
@@ -37,7 +36,7 @@
     allSeries = [...allSeries, data];
   }
 
-  async function onSeriesDeleted() {
+  async function deleteSeries() {
     if (!seriesToDelete) return;
 
     const { error } = await actions.series.deleteSeriesById(seriesToDelete.id);
@@ -47,7 +46,7 @@
       return;
     }
 
-    allSeries = allSeries.filter((series) => series.id !== seriesToDelete?.id);
+    allSeries = allSeries.filter((series) => series.id !== seriesToDelete.id);
     seriesToDelete = null;
   }
 
@@ -134,10 +133,7 @@
                   Edit
                 </button>
                 <button
-                  onclick={() => {
-                    seriesToDelete = series; 
-                    showDeleteConfirmationModal = true;
-                  }}
+                  onclick={() => (seriesToDelete = series)}
                   class="text-white cursor-pointer bg-red-500 hover:bg-red-600 rounded-md px-5 py-2 mb-2"
                 >
                   Delete
@@ -151,21 +147,19 @@
   </div>
 
   <button
-    onclick={() => {
-      showAddSeriesModal = true;
-    }}
     aria-label="Add new series"
     class="w-full mt-3 py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold cursor-pointer"
+    onclick={() => (showAddSeriesModal = true)}
   >
     + Create Series
   </button>
 </div>
 
 <DeleteConfirmationModal
-  show={showDeleteConfirmationModal}
-  seriesToDelete={seriesToDelete}
-  confirmDelete={onSeriesDeleted}
-  closeModal={() => (showDeleteConfirmationModal = false)}
+  showModal={seriesToDelete != null}
+  {seriesToDelete}
+  {deleteSeries}
+  closeModal={() => (seriesToDelete = null)}
 />
 
 <SeriesModal

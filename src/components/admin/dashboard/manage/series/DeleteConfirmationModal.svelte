@@ -1,22 +1,24 @@
 <script lang="ts">
-  import type { Series } from "../../types/database";
+  import type { Series } from "../../../../../types/database";
 
   let {
-    show,
+    showModal,
     seriesToDelete,
+    deleteSeries,
     closeModal,
-    confirmDelete,
   }: {
-    show: boolean;
-    seriesToDelete: Series | null;
-    confirmDelete: () => void;
+    showModal: boolean;
+    seriesToDelete: Series;
+    deleteSeries: () => void;
     closeModal: () => void;
   } = $props();
 
   let deleteConfirmationModal: HTMLDialogElement;
 
   $effect(() =>
-    show ? deleteConfirmationModal.show() : deleteConfirmationModal.close(),
+    showModal
+      ? deleteConfirmationModal.showModal()
+      : deleteConfirmationModal.close(),
   );
 </script>
 
@@ -29,14 +31,16 @@
       type="button"
     ></button>
 
-    <div
-      class="relative bg-[#111111] border border-white/10 rounded-2xl p-8"
-    >
-      <h1 class="text-center text-red-600 text-2xl font-bold">Confirm Deletion</h1>
+    <div class="relative bg-[#111111] border border-white/10 rounded-2xl p-8">
+      <h1 class="text-center text-red-600 text-2xl font-bold">
+        Confirm Deletion
+      </h1>
       <p class="text-white mt-4">
-        Are you sure you want to delete <strong>{seriesToDelete?.name}</strong>?
+        Are you sure you want to delete <strong>{seriesToDelete.name}</strong>?
       </p>
-      <p class="text-center text-white uppercase">⚠️This action is irreversible⚠️</p>
+      <p class="text-center text-white uppercase">
+        ⚠️This action is irreversible⚠️
+      </p>
 
       <div class="mt-6 flex justify-between">
         <button
@@ -46,10 +50,7 @@
           Cancel
         </button>
         <button
-          onclick={() => {
-            confirmDelete();
-            closeModal();
-          }}
+          onclick={() => deleteSeries()}
           class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
         >
           Confirm

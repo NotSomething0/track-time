@@ -36,7 +36,7 @@
         Confirm Deletion
       </h1>
       <p class="text-white mt-4">
-        Are you sure you want to delete <strong>{seriesToDelete.name}</strong>?
+        Are you sure you want to delete <strong>{seriesToDelete?.name}</strong>?
       </p>
       <p class="text-center text-white uppercase">
         ⚠️This action is irreversible⚠️

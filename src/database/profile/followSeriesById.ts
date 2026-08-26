@@ -14,7 +14,10 @@ export default async (
 
   const { error } = await context.locals.supabase
     .from("profile_followed_series")
-    .insert({ user_id: user?.id, series_id: series_id });
+    .upsert(
+      { user_id: user?.id, series_id: series_id },
+      { ignoreDuplicates: true },
+    );
 
   if (error) handlePostgrestError(error);
 };

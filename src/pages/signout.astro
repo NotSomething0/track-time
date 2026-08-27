@@ -1,6 +1,6 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import SignOutEffect from '../components/SignoutEffect.svelte';
+import Layout from "../layouts/Layout.astro";
+import SignOutEffect from "../components/SignoutEffect.svelte";
 ---
 
 <script>
@@ -11,20 +11,30 @@ import SignOutEffect from '../components/SignoutEffect.svelte';
 
   // @TODO: Do something if we failed to signout idk what the error could even be
   if (error) {
-    console.log('something wen\'t wrong while signing you out');
+    console.log("something wen't wrong while signing you out");
   } else {
-    navigate('/')
+    navigate("/");
   }
 </script>
 
 <Layout title="Pit Stop - Signing Out">
-  <main class="relative min-h-screen w-full overflow-hidden bg-zinc-950 flex items-center justify-center">
-    <div class="absolute inset-0 z-0 opacity-20" 
-        style="background-image: radial-gradient(circle at 2px 2px, #3f3f46 1px, transparent 0); background-size: 40px 40px;">
+  <main
+    class="relative min-h-screen w-full overflow-hidden bg-zinc-950 flex items-center justify-center"
+  >
+    <div
+      class="absolute inset-0 z-0 opacity-20"
+      style="background-image: radial-gradient(circle at 2px 2px, #3f3f46 1px, transparent 0); background-size: 40px 40px;"
+    >
     </div>
-    
-    <div class="absolute -top-24 -left-24 w-96 h-96 bg-red-600/20 blur-[120px] rounded-full"></div>
-    <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-600/20 blur-[120px] rounded-full"></div>
+
+    <div
+      class="absolute -top-24 -left-24 w-96 h-96 bg-red-600/20 blur-[120px] rounded-full"
+    >
+    </div>
+    <div
+      class="absolute -bottom-24 -right-24 w-96 h-96 bg-blue-600/20 blur-[120px] rounded-full"
+    >
+    </div>
 
     <SignOutEffect client:load />
   </main>

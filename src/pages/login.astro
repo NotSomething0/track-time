@@ -1,41 +1,41 @@
 ---
-import Layout from '../layouts/Layout.astro';
+import Layout from "../layouts/Layout.astro";
 
 const { data } = await Astro.locals.supabase.auth.getClaims();
 
 // We're already logged in send them to the dashboard
-if (data?.claims)
-  return Astro.redirect('/home/dashboard');
+if (data?.claims) return Astro.redirect("/home/dashboard");
 
-const flash: string|null = await Astro.session?.get('flash') || null;
+const flash: string | null = (await Astro.session?.get("flash")) || null;
 ---
 
 <script>
   import { actions } from "astro:actions";
   import { navigate } from "astro:transitions/client";
 
-  const LOGIN_FORM = document.getElementById('loginForm') as HTMLFormElement;
-  const LOGIN_BUTTON = document.getElementById('loginButton') as HTMLButtonElement;
+  const LOGIN_FORM = document.getElementById("loginForm") as HTMLFormElement;
+  const LOGIN_BUTTON = document.getElementById(
+    "loginButton",
+  ) as HTMLButtonElement;
 
   async function login() {
     LOGIN_BUTTON.disabled = true;
-    LOGIN_BUTTON.textContent = 'Logging in...';
-    LOGIN_BUTTON.setAttribute('aria-busy', 'true');
+    LOGIN_BUTTON.textContent = "Logging in...";
+    LOGIN_BUTTON.setAttribute("aria-busy", "true");
 
     const LOGIN_DATA = new FormData(LOGIN_FORM);
     const { error } = await actions.authentication.signIn(LOGIN_DATA);
 
-    if (!error)
-      return navigate('/home/dashboard');
+    if (!error) return navigate("/home/dashboard");
 
     //TODO: Add flash message for errors
 
     LOGIN_BUTTON.disabled = false;
-    LOGIN_BUTTON.textContent = 'Log In';
-    LOGIN_BUTTON.setAttribute('aria-busy', 'false');
+    LOGIN_BUTTON.textContent = "Log In";
+    LOGIN_BUTTON.setAttribute("aria-busy", "false");
   }
 
-  LOGIN_FORM?.addEventListener('submit', async (event: SubmitEvent) => {
+  LOGIN_FORM?.addEventListener("submit", async (event: SubmitEvent) => {
     event.preventDefault();
     await login();
   });
@@ -43,19 +43,30 @@ const flash: string|null = await Astro.session?.get('flash') || null;
 
 <Layout title="Login | Track Time">
   <header class="p-8 flex justify-center md:justify-start">
-    <div class="text-4xl font-black italic tracking-tighter ">
-      <a href="/"><span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]">TIME</span></a>
+    <div class="text-4xl font-black italic tracking-tighter">
+      <a href="/"
+        ><span class="text-[#FF2800]">TRACK</span><span class="text-[#FF8000]"
+          >TIME</span
+        ></a
+      >
     </div>
   </header>
   <main class="flex items-center justify-center">
-    <form id="loginForm" class="w-full max-w-md px-6 py-8 bg-white rounded-xl shadow-lg">
-      <h2 class="text-2xl text-gray-900 mb-6 text-center font-black">Welcome back!</h2>
+    <form
+      id="loginForm"
+      class="w-full max-w-md px-6 py-8 bg-white rounded-xl shadow-lg"
+    >
+      <h2 class="text-2xl text-gray-900 mb-6 text-center font-black">
+        Welcome back!
+      </h2>
 
-      {flash && (
-        <p class="mb-6 p-4 rounded-lg bg-red-100 border border-red-400 text-red-700 text-center">
-          {flash}
-        </p>
-      )}
+      {
+        flash && (
+          <p class="mb-6 p-4 rounded-lg bg-red-100 border border-red-400 text-red-700 text-center">
+            {flash}
+          </p>
+        )
+      }
 
       <label for="email" class="text-sm font-medium text-gray-700 mb-2">
         Email
@@ -71,7 +82,10 @@ const flash: string|null = await Astro.session?.get('flash') || null;
         />
       </label>
 
-      <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+      <label
+        for="password"
+        class="block text-sm font-medium text-gray-700 mb-2"
+      >
         Password
 
         <input
@@ -94,9 +108,13 @@ const flash: string|null = await Astro.session?.get('flash') || null;
     </form>
   </main>
   <footer class="text-center py-6 text-gray-500 text-sm">
-    <a href="/forgot" class="text-[#FF8000] hover:text-[#ffb84d] font-medium">Forgot password?</a>
+    <a href="/forgot" class="text-[#FF8000] hover:text-[#ffb84d] font-medium"
+      >Forgot password?</a
+    >
     <span class="mx-2">|</span>
-    <span>Don't have an account?</span> 
-    <a href="/signup" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold pl-1">Sign up</a>
+    <span>Don't have an account?</span>
+    <a href="/signup" class="text-[#00A0DE] hover:text-[#00c0ff] font-bold pl-1"
+      >Sign up</a
+    >
   </footer>
 </Layout>

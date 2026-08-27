@@ -53,7 +53,7 @@
   });
 </script>
 
-<div class="bg-[#111111] border border-white/10 h-screen p-6">
+<div class="bg-[#111111] border border-white/10 p-6 w-screen">
   <h1 class="text-xl font-bold text-white mb-2">User Manager</h1>
 
   <input

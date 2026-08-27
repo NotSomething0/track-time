@@ -77,7 +77,7 @@
   });
 </script>
 
-<div class="bg-[#111111] border border-white/10 h-screen p-6">
+<div class="bg-[#111111] border border-white/10 w-screen p-6">
   <h1 class="text-xl font-bold text-white mb-2">Series Manager</h1>
 
   <input

@@ -7,7 +7,6 @@
 
 <main class="flex h-screen">
   <aside class="bg-[#111111] border border-white/10 w-64">
-    <div>
       <h1 class="text-white uppercase m-4 text-center">Admin Controls</h1>
       <nav class="flex flex-col items-center">
         <button
@@ -30,13 +29,11 @@
           <span class="mr-2">🎬</span> Series Manager
         </button>
       </nav>
-    </div>
   </aside>
-  <div class="w-screen">
+
     {#if currentView == "users"}
       <UserManager />
     {:else if currentView == "series"}
       <SeriesManager />
     {/if}
-  </div>
 </main>

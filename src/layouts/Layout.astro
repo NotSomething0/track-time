@@ -3,19 +3,20 @@ import "../styles/global.css";
 
 const { title } = Astro.props;
 ---
-<!DOCTYPE html>
+
+<!doctype html>
 <html lang="en" class="scroll-smooth">
   <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-    <link rel="mask-icon" href="/favicon.svg" color="#FFFFFF">
-    <meta name="msapplication-TileColor" content="#FFFFFF">
-    <meta name="theme-color" content="#ffffff">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="mask-icon" href="/favicon.svg" color="#FFFFFF" />
+    <meta name="msapplication-TileColor" content="#FFFFFF" />
+    <meta name="theme-color" content="#ffffff" />
     <title>{title}</title>
-    <meta name="description" content={title}>
+    <meta name="description" content={title} />
   </head>
-  <body>
+  <body class="flex flex-col h-screen">
     <slot />
   </body>
 </html>

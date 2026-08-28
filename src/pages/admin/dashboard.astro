@@ -1,19 +1,25 @@
 ---
-import Layout from '../../layouts/Layout.astro';
-import Dashboard from '../../components/admin/dashboard/Dashboard.svelte';
+import Layout from "../../layouts/Layout.astro";
+import Dashboard from "../../components/admin/dashboard/Dashboard.svelte";
 ---
 
 <Layout title="Track Time | Admin Dashboard">
-    <header class="bg-black p-4">
-        <nav class="flex justify-between items-center">
-            <a href="/admin/dashboard" class="text-4xl font-black italic tracking-tighter">
-                <span class="text-orange-600">Track</span>
-                <span class="text-orange-400">Time</span>
-            </a>
-        </nav>
-    </header>
-    <Dashboard client:load />
-    <footer class="bg-black">
-        <p class="text-xs text-zinc-600">© 2026 Track Time. All rights reserved. All trademarks are property of their respective owners in the US and other countries.</p>
-    </footer>
+  <header class="flex bg-[#111111] p-4">
+    <nav class="flex justify-between items-center">
+      <a
+        href="/admin/dashboard"
+        class="text-4xl font-black italic tracking-tighter"
+      >
+        <span class="text-orange-600">Track</span>
+        <span class="text-orange-400">Time</span>
+      </a>
+    </nav>
+  </header>
+  <Dashboard client:load />
+  <footer class="bg-[#111111] flex justify-center">
+    <p class="text-white p-2">
+      © 2026 Track Time. All rights reserved. All trademarks are property of
+      their respective owners in the US and other countries.
+    </p>
+  </footer>
 </Layout>

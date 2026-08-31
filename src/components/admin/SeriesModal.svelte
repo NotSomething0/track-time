@@ -1,133 +1,145 @@
 <script lang="ts">
-    import { slide } from 'svelte/transition';
-    import SeriesEventList from './SeriesEventList.svelte';
+  import SeriesEventList from "./SeriesEventList.svelte";
 
-    let placeholder = false;
-    let dialog: HTMLDialogElement;
-    let { seriesData, show, closeModal, isEdit, seriesSaved }: { seriesData: SeriesData | null, show: any, closeModal: any, isEdit: boolean, seriesSaved: any } = $props();
+  let dialog: HTMLDialogElement;
+  let mouseDownTarget: EventTarget | null = null;
 
-    $effect(() => show ? dialog.showModal() : dialog.close());
+  let {
+    seriesData,
+    show,
+    closeModal,
+    isEdit,
+    seriesSaved,
+  }: {
+    seriesData: SeriesData | null;
+    show: any;
+    closeModal: any;
+    isEdit: boolean;
+    seriesSaved: any;
+  } = $props();
 
-    let id = $state<string | null>(null);
-    let name = $state('');
-    let description = $state('');
+  $effect(() => (show ? dialog.showModal() : dialog.close()));
 
-    $effect(() => {
-        if (seriesData?.id) {
-            id = seriesData.id ?? null;
-            name = seriesData.name ?? '';
-            description = seriesData.description ?? '';
-        }
-    });
+  let id = $state<string | null>(null);
+  let name = $state("");
+  let description = $state("");
 
-    async function createOrUpdateSeries() {
-        if (!name) {
-            alert("Name cannot be empty");
-            return;
-        }
-
-        if (!description) {
-            alert("Description cannot be empty");
-            return;
-        }
-
-        if (isEdit) {
-            if (!id) {
-                alert(`Can't save series ${name} the id is missing. Are you sure this series has been created?`);
-                return;
-            }
-
-            seriesSaved({ id, name, description, events });
-        } else {
-            seriesSaved(name, description, events);
-        }
-
-        closeModal();
+  $effect(() => {
+    if (seriesData?.id) {
+      id = seriesData.id ?? null;
+      name = seriesData.name ?? "";
+      description = seriesData.description ?? "";
     }
+  });
+
+  async function createOrUpdateSeries() {
+    if (!name) {
+      alert("Name cannot be empty");
+      return;
+    }
+
+    if (!description) {
+      alert("Description cannot be empty");
+      return;
+    }
+
+    if (isEdit) {
+      if (!id) {
+        alert(
+          `Can't save series ${name} the id is missing. Are you sure this series has been created?`,
+        );
+        return;
+      }
+
+      seriesSaved({ id, name, description, events });
+    } else {
+      seriesSaved(name, description, events);
+    }
+
+    closeModal();
+  }
 </script>
 
-<dialog bind:this={dialog} onclose={closeModal} class="m-auto bg-[#111111] rounded-md min-w-2xl">
-    <form action="" class="bg-[#111111] rounded-md">
-        <h1 class="text-white font-bold p-2">Editing {seriesData?.name}</h1>
+<dialog
+  bind:this={dialog}
+  onclose={closeModal}
+  class="m-auto bg-[#111111] rounded-2xl min-w-2xl backdrop:bg-black/60 backdrop:backdrop-blur-sm"
+  onclick={(e) => {
+    if (e.target == dialog && mouseDownTarget == dialog) closeModal();
+  }}
+  onmousedown={(e) => (mouseDownTarget = e.target)}
+>
+  <h1 class="text-white text-2xl font-bold p-4">Editing {name}</h1>
 
-        <fieldset class="flex flex-col items-center">
-            <legend class="text-white text-center">Series Information</legend>
+  <form action="" class="bg-white/5 rounded-2xl mx-6 mb-6 p-4">
+    <fieldset class="flex flex-col">
+      <legend class="text-white font-bold text-center text-xl"
+        >Series Information</legend
+      >
 
-            <label for="" class="text-white flex flex-col">
-                Name:
-                <input type="text" class="focus:outline-none">
-            </label>
+      <label for="" class="text-white flex flex-col mb-1">
+        Name:
+        <input
+          type="text"
+          class="w-full px-4 py-2 rounded-xl bg-white/5 text-white focus:outline-none mt-1"
+          bind:value={name}
+        />
+      </label>
 
-            <label for="" class="text-white flex flex-col">
-                Description:
-                <input type="text" class="focus:outline-none">
-            </label>
+      <label for="" class="text-white flex flex-col mb-1">
+        Description:
+        <textarea
+          name=""
+          id=""
+          class="w-full px-4 py-2 rounded-xl bg-white/5 text-white focus:outline-none mt-1"
+          bind:value={description}></textarea>
+      </label>
 
-            <label for="" class="text-white">
-                Status:
-                <select name="" id="">
-                    <option value="">Test</option>
-                    <option value="">Test</option>
-                    <option value="">Test</option>
-                    <option value="">Test</option>
-                </select>
-            </label>
+      <label for="" class="text-white">
+        Status:
+        <select
+          name=""
+          id=""
+          class="w-full px-4 py-2 rounded-xl bg-white/5 text-white focus:outline-none mt-1"
+        >
+          <option value="" class="text-black">Test</option>
+          <option value="" class="text-black">Test</option>
+          <option value="" class="text-black">Test</option>
+          <option value="" class="text-black">Test</option>
+        </select>
+      </label>
 
-            <label for="" class="text-white">
-                Category:
-                <select name="" id="">
-                    <option value="">Test</option>
-                    <option value="">Test</option>
-                    <option value="">Test</option>
-                    <option value="">Test</option>
-                </select>
-            </label>
-        </fieldset>
+      <label for="" class="text-white">
+        Category:
+        <select
+          name=""
+          id=""
+          class="w-full px-4 py-2 rounded-xl bg-white/5 text-white focus:outline-none mt-1"
+        >
+          <option value="" class="text-black">Test</option>
+          <option value="" class="text-black">Test</option>
+          <option value="" class="text-black">Test</option>
+          <option value="" class="text-black">Test</option>
+        </select>
+      </label>
+    </fieldset>
 
-        <div class="flex justify-end">
-            <button type="button" class="m-2 text-white" onclick={closeModal}>Close</button>
-            <button type="button" class="m-2 text-white" onclick={closeModal}>Save</button>
-        </div>
-    </form>
-</dialog>
-
-{#if placeholder}
-    <div class="fixed inset-0 flex items-center justify-center">
-        <button class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick={closeModal} aria-label="Close modal" type="button"></button>
-
-        <!-- panel -->
-        <div class="relative bg-slate-900 border border-white/10 rounded-3xl w-full max-w-4xl p-8 shadow-2xl" transition:slide={{ duration: 200 }}>
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-2xl font-bold text-white">Editing {seriesData?.name ?? "Unknown"}</h2>
-                <button onclick={closeModal} class="text-red-700 hover:text-red-500" aria-label="Close Series Manager">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm-1.72 6.97a.75.75 0 1 0-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 1 0 1.06 1.06L12 13.06l1.72 1.72a.75.75 0 1 0 1.06-1.06L13.06 12l1.72-1.72a.75.75 0 1 0-1.06-1.06L12 10.94l-1.72-1.72Z" clip-rule="evenodd" />
-                    </svg>
-                </button>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="text-slate-400 text-sm">Name
-                        <input bind:value={name} class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-orange-500" />
-                    </label>
-                </div>
-
-                <div>
-                    <label class="text-slate-400 text-sm">Description
-                        <textarea bind:value={description} class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-orange-500"></textarea>
-                    </label>
-                </div>
-
-                <!-- Events Section (Replaced table with EventSelectionCard) -->
-                <h3 class="text-lg font-semibold text-white">Events</h3>
-                <SeriesEventList series={seriesData} />
-
-                <div class="flex justify-end gap-3 mt-4">
-                    <button onclick={closeModal} class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-white">Cancel</button>
-                    <button onclick={createOrUpdateSeries} class="px-4 py-2 bg-orange-600 hover:bg-orange-500 rounded-xl text-white">{isEdit ? "Save" : "Add"}</button>
-                </div>
-            </div>
-        </div>
+    <div class="flex justify-end gap-3 pl-2 pt-3">
+      <button
+        type="button"
+        onclick={closeModal}
+        class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-md text-white cursor-pointer"
+        >Cancel</button
+      >
+      <button
+        type="button"
+        onclick={createOrUpdateSeries}
+        class="px-4 py-2 bg-orange-600 hover:bg-orange-500 rounded-md text-white cursor-pointer"
+        >{isEdit ? "Save" : "Add"}</button
+      >
     </div>
-{/if}
+  </form>
+
+  <!-- Events Section (Replaced table with EventSelectionCard) -->
+  <!-- <SeriesEventList series={seriesData} /> -->
+</dialog>

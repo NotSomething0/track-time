@@ -2,11 +2,15 @@
     import { slide } from 'svelte/transition';
     import SeriesEventList from './SeriesEventList.svelte';
 
+    let placeholder = false;
+    let dialog: HTMLDialogElement;
+    let { seriesData, show, closeModal, isEdit, seriesSaved }: { seriesData: SeriesData | null, show: any, closeModal: any, isEdit: boolean, seriesSaved: any } = $props();
+
+    $effect(() => show ? dialog.showModal() : dialog.close());
+
     let id = $state<string | null>(null);
     let name = $state('');
     let description = $state('');
-    let { seriesData, show, closeModal, isEdit, seriesSaved }: { seriesData: SeriesData | null, show: any, closeModal: any, isEdit: boolean, seriesSaved: any } = $props();
-
 
     $effect(() => {
         if (seriesData?.id) {
@@ -42,8 +46,53 @@
     }
 </script>
 
-{#if show}
-    <div class="fixed inset-0 z-50 flex items-center justify-center">
+<dialog bind:this={dialog} onclose={closeModal} class="m-auto bg-[#111111] rounded-md min-w-2xl">
+    <form action="" class="bg-[#111111] rounded-md">
+        <h1 class="text-white font-bold p-2">Editing {seriesData?.name}</h1>
+
+        <fieldset class="flex flex-col items-center">
+            <legend class="text-white text-center">Series Information</legend>
+
+            <label for="" class="text-white flex flex-col">
+                Name:
+                <input type="text" class="focus:outline-none">
+            </label>
+
+            <label for="" class="text-white flex flex-col">
+                Description:
+                <input type="text" class="focus:outline-none">
+            </label>
+
+            <label for="" class="text-white">
+                Status:
+                <select name="" id="">
+                    <option value="">Test</option>
+                    <option value="">Test</option>
+                    <option value="">Test</option>
+                    <option value="">Test</option>
+                </select>
+            </label>
+
+            <label for="" class="text-white">
+                Category:
+                <select name="" id="">
+                    <option value="">Test</option>
+                    <option value="">Test</option>
+                    <option value="">Test</option>
+                    <option value="">Test</option>
+                </select>
+            </label>
+        </fieldset>
+
+        <div class="flex justify-end">
+            <button type="button" class="m-2 text-white" onclick={closeModal}>Close</button>
+            <button type="button" class="m-2 text-white" onclick={closeModal}>Save</button>
+        </div>
+    </form>
+</dialog>
+
+{#if placeholder}
+    <div class="fixed inset-0 flex items-center justify-center">
         <button class="absolute inset-0 bg-black/60 backdrop-blur-sm" onclick={closeModal} aria-label="Close modal" type="button"></button>
 
         <!-- panel -->

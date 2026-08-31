@@ -51,9 +51,9 @@
         return;
       }
 
-      seriesSaved({ id, name, description, events });
+      seriesSaved({ id, name, description });
     } else {
-      seriesSaved(name, description, events);
+      seriesSaved(name, description );
     }
 
     closeModal();

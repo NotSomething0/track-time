@@ -17,7 +17,6 @@
   let totalPages = $state(1);
 
   function openEditUserModal(user: any) {
-    console.log("opening");
     editingUser = { ...user };
     editUserModal.showModal();
   }

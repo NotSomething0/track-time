@@ -2,7 +2,7 @@ import type { APIContext } from "astro";
 import type { AuthError, PostgrestError } from "@supabase/supabase-js";
 import { createServerClient, parseCookieHeader } from "@supabase/ssr";
 import { ActionError, type ActionAPIContext } from "astro:actions";
-import type { Database } from "../types/supabse";
+import type { Database } from "../types/supabase";
 
 export const getSupabaseClient = (context: APIContext | ActionAPIContext) => {
   return createServerClient<Database>(

@@ -1,5 +1,5 @@
 <script lang="ts">
-  import type { Series } from "../../../../../types/database";
+  import type { SeriesWithNextEvent } from "../../../../../database/series";
 
   let {
     showModal,
@@ -8,7 +8,7 @@
     closeModal,
   }: {
     showModal: boolean;
-    seriesToDelete: Series;
+    seriesToDelete: SeriesWithNextEvent | null;
     deleteSeries: () => void;
     closeModal: () => void;
   } = $props();

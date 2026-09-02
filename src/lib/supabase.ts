@@ -26,7 +26,7 @@ export const getSupabaseClient = (context: APIContext | ActionAPIContext) => {
   );
 };
 
-export function handleAuthError(error: AuthError) {
+export function handleAuthError(error: AuthError): never {
   switch (error.code) {
     case "weak_password":
       throw new ActionError({
@@ -45,7 +45,7 @@ export function handleAuthError(error: AuthError) {
   }
 }
 
-export function handlePostgrestError(error: PostgrestError) {
+export function handlePostgrestError(error: PostgrestError): never {
   switch (error.code) {
     default:
       console.error(

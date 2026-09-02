@@ -1,32 +1,33 @@
 <script lang="ts">
-  import type { Series } from "../../../../../types/database";
   import { onMount } from "svelte";
   import { actions } from "astro:actions";
   import SeriesModal from "../../../SeriesModal.svelte";
   import DeleteConfirmationModal from "./DeleteConfirmationModal.svelte";
 
-  let loadingSeries = $state(true);
-  let showAddSeriesModal = $state(false);
+  import type { SeriesWithNextEvent } from "../../../../../database/series";
 
-  let allSeries = $state<Series[]>([]);
-  let filteredSeries = $state<Series[]>([]);
-  let seriesToDelete = $state<Series | null>(null);
-  let editingSeries: Series | null = $state(null);
-  let addingSeries = $state<Series | null>(null);
+  let loading = $state(false);
+  let loadingError = $state(false);
+  let seriesModalState:
+    | { mode: "add"; data: null }
+    | { mode: "edit"; data: SeriesWithNextEvent }
+    | null = $state(null);
+  let seriesStatuses = $state();
+  let seriesCategories = $state();
 
+  let allSeries = $state<SeriesWithNextEvent[] | null>([]);
+  let filteredSeries = $state<SeriesWithNextEvent[]>([]);
+  let seriesToDelete = $state<SeriesWithNextEvent | null>(null);
   let searchTerm = $state("");
 
   $effect(() => {
-    filteredSeries = allSeries.filter((series) =>
+    filteredSeries = allSeries?.filter((series) =>
       series.name.toLowerCase().includes(searchTerm.toLowerCase()),
     );
   });
 
-  async function createNewSeries(name: string, description: string) {
-    const { data, error } = await actions.series.createSeries({
-      name,
-      description,
-    });
+  async function createNewSeries(series: any) {
+    const { data, error } = await actions.series.createSeries(series);
 
     if (error) {
       console.error("Failed to create series:", error);
@@ -63,18 +64,31 @@
     );
   }
 
-  onMount(async () => {
-    const { data, error } = await actions.series.getAllSeries();
+  async function load() {
+    try {
+      loading = true;
+      loadingError = false;
 
-    if (error) {
-      loadingSeries = false;
-      console.error("Failed to get series data");
-      return;
+      const [series, options] = await Promise.all([
+        actions.series.getAllSeries(),
+        actions.administration.getSeriesOptions(),
+      ]);
+
+      if (series.error) throw series.error;
+      if (options.error) throw options.error;
+
+      allSeries = series.data ?? [];
+      seriesStatuses = options.data?.statuses ?? [];
+      seriesCategories = options.data?.categories ?? [];
+    } catch (error) {
+      console.error("Failed to load:", error);
+      loadingError = true;
+    } finally {
+      loading = false;
     }
+  }
 
-    allSeries = data;
-    loadingSeries = false;
-  });
+  onMount(load);
 </script>
 
 <div class="bg-[#111111] border border-white/10 w-screen p-6">
@@ -99,10 +113,16 @@
         </tr>
       </thead>
       <tbody>
-        {#if loadingSeries}
+        {#if loading}
           <tr>
             <td colspan="4" class="p-3 text-center text-zinc-400">
               Loading Series...
+            </td>
+          </tr>
+        {:else if loadingError}
+          <tr>
+            <td colspan="4" class="p-3 text-center text-zinc-400">
+              An error occured while loading.
             </td>
           </tr>
         {:else if filteredSeries.length < 1}
@@ -127,7 +147,7 @@
               <td class="text-center text-white">{series.status}</td>
               <td class="flex flex-col items-center">
                 <button
-                  onclick={() => (editingSeries = series)}
+                  onclick={() => (seriesModalState = { mode: "edit", data: series })}
                   class="text-white cursor-pointer bg-blue-600 hover:bg-blue-700 rounded-md px-8 py-2 m-2"
                 >
                   Edit
@@ -149,31 +169,25 @@
   <button
     aria-label="Add new series"
     class="w-full mt-3 py-3 rounded-xl bg-orange-600 hover:bg-orange-500 text-white font-bold cursor-pointer"
-    onclick={() => (showAddSeriesModal = true)}
+    onclick={() => (seriesModalState = { mode: "add", data: null })}
   >
     + Create Series
   </button>
 </div>
+
+{#if seriesModalState}
+  <SeriesModal
+    series={seriesModalState}
+    categories={seriesCategories}
+    statuses={seriesStatuses}
+    closeModal={() => (seriesModalState = null)}
+    onCommit={seriesModalState.mode === "edit" ? updateSeries : createNewSeries}
+  />
+{/if}
 
 <DeleteConfirmationModal
   showModal={seriesToDelete != null}
   {seriesToDelete}
   {deleteSeries}
   closeModal={() => (seriesToDelete = null)}
-/>
-
-<SeriesModal
-  seriesData={editingSeries}
-  isSeriesModalOpen={editingSeries != null}
-  isEdit={true}
-  seriesSaved={updateSeries}
-  closeModal={() => (editingSeries = null)}
-/>
-
-<SeriesModal
-  seriesData={addingSeries}
-  isSeriesModalOpen={showAddSeriesModal}
-  closeModal={() => (showAddSeriesModal = false)}
-  isEdit={false}
-  seriesSaved={createNewSeries}
 />

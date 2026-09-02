@@ -174,6 +174,7 @@ export type Database = {
         Returns: boolean;
       };
       custom_access_token_hook: { Args: { event: Json }; Returns: Json };
+      get_types: { Args: { enum_type: string }; Returns: Json };
     };
     Enums: {
       "Series Category":

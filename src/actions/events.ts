@@ -1,6 +1,6 @@
 import { defineAction } from 'astro:actions';
 import { z } from 'astro/zod';
-import * as db from '../database/event'
+import * as db from "../database/events"
 
 export default {
     createEvent: defineAction({

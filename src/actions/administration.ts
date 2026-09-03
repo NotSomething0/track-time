@@ -10,6 +10,17 @@ export default {
       username: z.string(),
     }),
     handler: async (input, context) => {
+      const { data, error } = await context.locals.supabase.auth.getClaims();
+
+      if (error)
+        handleAuthError(error);
+
+      if (!data?.claims?.app_metadata?.admin)
+        throw new ActionError({ 
+          code: "UNAUTHORIZED", 
+          message: "You are not authorized to perform this action."
+        });
+
       return await db.getAllProfiles(context, input);
     },
   }),

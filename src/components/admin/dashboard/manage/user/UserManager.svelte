@@ -1,10 +1,10 @@
 <script lang="ts">
-  import type { Profile } from "../../../../../types/database";
+  import type { Profiles } from "../../../../../database/profiles";
   import { onMount } from "svelte";
   import { actions } from "astro:actions";
 
   let loadingProfiles = $state(true);
-  let profiles: Profile[] = $state([]);
+  let profiles: Profiles = $state([]);
   let editUserModal: HTMLDialogElement;
   let searchQuery = $state("");
   let currentPage = $state(1);

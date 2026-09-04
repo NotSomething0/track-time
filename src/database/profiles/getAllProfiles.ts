@@ -1,10 +1,10 @@
 import { handlePostgrestError } from "$lib/supabase";
 import { type ActionAPIContext } from "astro:actions";
 
-export default async (
+export async function getAllProfiles(
   context: ActionAPIContext,
   filter: { username: string },
-) => {
+) {
   let profilesQuery = context.locals.supabase.from("profiles").select();
 
   if (filter.username)
@@ -16,3 +16,5 @@ export default async (
 
   return data;
 };
+
+export type Profiles = NonNullable<Awaited<ReturnType<typeof getAllProfiles>>>;

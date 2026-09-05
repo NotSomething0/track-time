@@ -1,6 +1,7 @@
 <script lang="ts">
   import UserManager from "./manage/user/UserManager.svelte";
   import SeriesManager from "./manage/series/SeriesManager.svelte";
+  import EventManager from "./manage/event/EventManager.svelte";
 
   let currentView = $state("users");
 </script>
@@ -28,6 +29,16 @@
       >
         <span class="mr-2">📁</span> Series Manager
       </button>
+
+      <button
+        onclick={() => (currentView = "events")}
+        class="flex items-center px-3 py-2.5 rounded-md cursor-pointer
+                    {currentView === 'events'
+          ? 'bg-orange-600 text-white'
+          : 'text-zinc-300 hover:bg-zinc-700 hover:text-white'}"
+      >
+        <span class="mr-2">📁</span> Events Manager
+      </button>
     </nav>
   </aside>
 
@@ -35,5 +46,7 @@
     <UserManager />
   {:else if currentView == "series"}
     <SeriesManager />
+  {:else if currentView == "events"}
+    <EventManager />
   {/if}
 </main>

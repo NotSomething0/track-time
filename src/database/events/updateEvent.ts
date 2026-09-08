@@ -1,26 +1,16 @@
-import type { AstroSession } from 'astro';
-import { getSupabaseClient } from '../../lib/supabase';
-import { type Event } from '../../types/database';
+import { handlePostgrestError } from "$lib/supabase";
+import type { ActionAPIContext } from "astro:actions";
 
-export default async(session: AstroSession | undefined, event: Event): Promise<any> => {
-    if (!event.id)
-    {
-        console.log('no id???')
-        return []
-    }
+export async function updateEvent(context: ActionAPIContext, event: any) {
+  const { data, error } = await context.locals.supabase
+    .from("events")
+    .upsert(event)
+    .select()
+    .single();
 
-    const supabase = getSupabaseClient(session);
+  if (error) handlePostgrestError(error);
 
-    const { data, error } = await supabase
-        .from('events')
-        .upsert(event)
-        .select()
-        .single();
-
-    if (error) {
-        console.log('An error occured while trying to execute the updateEvent query', error)
-        return [];
-    }
-
-    return data;
+  return data;
 }
+
+export type Event = NonNullable<Awaited<ReturnType<typeof updateEvent>>>;

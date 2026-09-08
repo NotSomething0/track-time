@@ -27,12 +27,9 @@ export default {
     },
   }),
   getEventsBySeriesId: defineAction({
-    input: z.object({
-      seriesId: z.string(),
-    }),
-    handler: async (input, context) => {
-      return await db.getEventsBySeriesId(context?.session, input.seriesId);
-    },
+    input: z.uuid(),
+    handler: async (input, context) =>
+      await db.getEventsBySeriesId(context, input),
   }),
   updateEvent: defineAction({
     input: z.object({

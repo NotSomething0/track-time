@@ -13,7 +13,17 @@ export default {
       timezone: z.string(),
     }),
     handler: async (input, context) => {
-      return await db.addEvent(context?.session, input);
+      const { data, error } = await context.locals.supabase.auth.getClaims();
+
+      if (error) handleAuthError(error);
+
+      if (!data?.claims.app_metadata?.admin)
+        throw new ActionError({
+          code: "UNAUTHORIZED",
+          message: "You are not authorized to perform this action.",
+        });
+
+      return await db.createEvent(context, input);
     },
   }),
   getEventsBySeriesId: defineAction({

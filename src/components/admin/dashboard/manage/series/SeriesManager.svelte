@@ -4,20 +4,19 @@
   import SeriesModal from "../../../SeriesModal.svelte";
   import DeleteConfirmationModal from "./DeleteConfirmationModal.svelte";
 
-  import type { SeriesWithNextEvent } from "../../../../../database/series";
+  import type { Series, SeriesList } from "../../../../../database/series";
 
   let loading = $state(false);
   let loadingError = $state(false);
   let seriesModalState:
-    | { mode: "add"; data: null }
-    | { mode: "edit"; data: SeriesWithNextEvent }
-    | null = $state(null);
+    { mode: "add"; data: null } | { mode: "edit"; data: Series } | null =
+    $state(null);
   let seriesStatuses = $state();
   let seriesCategories = $state();
 
-  let allSeries = $state<SeriesWithNextEvent[] | null>([]);
-  let filteredSeries = $state<SeriesWithNextEvent[]>([]);
-  let seriesToDelete = $state<SeriesWithNextEvent | null>(null);
+  let allSeries = $state<SeriesList>([]);
+  let filteredSeries = $state<SeriesList>([]);
+  let seriesToDelete = $state<Series | null>(null);
   let searchTerm = $state("");
 
   $effect(() => {
@@ -37,17 +36,15 @@
     allSeries = [...allSeries, data];
   }
 
-  async function deleteSeries() {
-    if (!seriesToDelete) return;
-
-    const { error } = await actions.series.deleteSeriesById(seriesToDelete.id);
+  async function deleteSeries(series: Series) {
+    const { error } = await actions.series.deleteSeriesById(series.id);
 
     if (error) {
       console.error("Failed to delete series:", error);
       return;
     }
 
-    allSeries = allSeries.filter((series) => series.id !== seriesToDelete.id);
+    allSeries = allSeries.filter((_series) => _series.id !== series.id);
     seriesToDelete = null;
   }
 
@@ -147,7 +144,8 @@
               <td class="text-center text-white">{series.status}</td>
               <td class="flex flex-col items-center">
                 <button
-                  onclick={() => (seriesModalState = { mode: "edit", data: series })}
+                  onclick={() =>
+                    (seriesModalState = { mode: "edit", data: series })}
                   class="text-white cursor-pointer bg-blue-600 hover:bg-blue-700 rounded-md px-8 py-2 m-2"
                 >
                   Edit
@@ -185,9 +183,11 @@
   />
 {/if}
 
-<DeleteConfirmationModal
-  showModal={seriesToDelete != null}
-  {seriesToDelete}
-  {deleteSeries}
-  closeModal={() => (seriesToDelete = null)}
-/>
+{#if seriesToDelete}
+  <DeleteConfirmationModal
+    showModal={seriesToDelete != null}
+    {seriesToDelete}
+    {deleteSeries}
+    closeModal={() => (seriesToDelete = null)}
+  />
+{/if}

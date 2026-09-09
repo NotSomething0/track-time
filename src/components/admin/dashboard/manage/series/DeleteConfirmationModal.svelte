@@ -1,22 +1,21 @@
 <script lang="ts">
-  import type { SeriesWithNextEvent } from "../../../../../database/series";
+  import type { Series } from "../../../../../database/series";
 
   let {
-    showModal,
     seriesToDelete,
     deleteSeries,
     closeModal,
   }: {
     showModal: boolean;
-    seriesToDelete: SeriesWithNextEvent | null;
-    deleteSeries: () => void;
+    seriesToDelete: Series;
+    deleteSeries: (series: Series) => void;
     closeModal: () => void;
   } = $props();
 
   let deleteConfirmationModal: HTMLDialogElement;
 
   $effect(() =>
-    showModal
+    seriesToDelete
       ? deleteConfirmationModal.showModal()
       : deleteConfirmationModal.close(),
   );
@@ -50,7 +49,7 @@
           Cancel
         </button>
         <button
-          onclick={() => deleteSeries()}
+          onclick={() => deleteSeries(seriesToDelete)}
           class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 cursor-pointer"
         >
           Confirm

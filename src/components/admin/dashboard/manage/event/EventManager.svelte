@@ -7,16 +7,21 @@
 
   let loading = $state(false);
   let loadingError = $state(false);
-  let events: Events = $state([]);
+  let allEvents: Events = $state([]);
+  let filteredEvents = $derived(
+    allEvents.filter((event) =>
+      event.name.toLocaleLowerCase().includes(searchQuery.toLocaleLowerCase()),
+    ),
+  );
   let currentPage = $state(0);
-  let totalPages = $derived(Math.ceil(events.length / EVENTS_PER_PAGE));
+  let totalPages = $derived(Math.ceil(filteredEvents.length / EVENTS_PER_PAGE));
+  let displayedPage = $derived(totalPages === 0 ? 0 : currentPage + 1);
   let pagedEvents = $derived(
-    events.slice(
+    filteredEvents.slice(
       currentPage * EVENTS_PER_PAGE,
       (currentPage + 1) * EVENTS_PER_PAGE,
     ),
   );
-
   let searchQuery = $state("");
 
   onMount(async () => {
@@ -26,15 +31,16 @@
 
     if (error) {
       loadingError = true;
+      loading = false;
       return;
     }
 
-    events = data;
+    allEvents = data;
     loading = false;
   });
 </script>
 
-<div class="bg-[#111111] border border-white/10 w-screen p-6">
+<div class="bg-[#111111] border border-white/10 w-full p-6">
   <h1 class="text-xl font-bold text-white mb-2">Events Manager</h1>
 
   <input
@@ -42,6 +48,7 @@
     name="seriesSearch"
     placeholder="Search events..."
     bind:value={searchQuery}
+    oninput={() => currentPage = 0}
     class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-gray-500 mb-4 focus:outline-none"
   />
 
@@ -103,7 +110,7 @@
               </td>
             </tr>
           {/each}
-          {#each Array.from( { length: EVENTS_PER_PAGE - pagedEvents.length } ) as _, i}
+          {#each Array.from( { length: EVENTS_PER_PAGE - pagedEvents.length } )}
             <tr aria-hidden="true" class="border-t border-white/5">
               <td colspan="4" class="h-26"></td>
             </tr>
@@ -113,7 +120,7 @@
       <tfoot>
         <tr>
           <td colspan="3" class="border-t border-white/10 text-white p-5">
-            Page {currentPage + 1} of {totalPages}
+            Page {displayedPage} of {totalPages}
           </td>
           <td class="border-t border-white/10 text-right p-5">
             <div class="flex justify-end gap-2">

@@ -1,4 +1,7 @@
-export type { SeriesWithNextEvent } from "./getAllSeries";
+import type { Tables } from "../../types/supabase";
+
+export type Series = Tables<"series">;
+export type SeriesList = Series[];
 
 export { default as addSeries } from "./addSeries";
 export { default as getSeriesById } from "./getSeriesById";

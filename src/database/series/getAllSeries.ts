@@ -13,24 +13,9 @@ export async function getAllSeries(context: ActionAPIContext) {
       message: "You are not authorized to perform this action",
     });
 
-  const { data, error } = await context.locals.supabase.from("series").select(`
-      id, 
-      name,
-      status,
-      category,
-      description,
-      status,
-      category,
-      next_event (
-          *
-      )
-  `);
+  const { data, error } = await context.locals.supabase.from("series").select();
 
   if (error) handlePostgrestError(error);
 
   return data;
 }
-
-export type SeriesWithNextEvent = NonNullable<
-  Awaited<ReturnType<typeof getAllSeries>>
->[number];

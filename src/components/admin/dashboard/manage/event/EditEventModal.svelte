@@ -1,154 +1,131 @@
 <script lang="ts">
-    let { event, onSave, onCancel, isOpen } = $props();
+  let { event, save, close } = $props();
 
-    console.log(event.series_id)
+  let dialog: HTMLDialogElement;
+  let mouseDownTarget: EventTarget | null = null;
 
-    function parseDateParts(isoString: string, timezone?: string) {
-        if (!isoString) return null;
+  let draft = $state({
+    id: "",
+    name: "",
+    series_id: "",
+    start_at: "",
+    end_at: "",
+    timezone: "",
+    track: "",
+  });
 
-        const date = new Date(isoString);
-
-        return {
-            date: date.toISOString().split("T")[0],
-            time: date.toISOString().split("T")[1].slice(0, 5),
-            timezone:
-                timezone ||
-                event?.timezone ||
-                Intl.DateTimeFormat().resolvedOptions().timeZone
-        };
+  $effect(() => {
+    if (event) {
+      dialog.showModal();
+      draft = { ...event };
+      return;
     }
 
-    const startParts = parseDateParts(event?.start_at, event?.timezone);
-    const endParts = parseDateParts(event?.end_at, event?.timezone);
+    dialog.close();
+  });
 
-    let newName = event?.name ?? "";
-
-    let newStartDate = startParts?.date ?? "";
-    let newStartTime = startParts?.time ?? "";
-    let newEndDate = endParts?.date ?? "";
-    let newEndTime = endParts?.time ?? "";
-
-    let newTimezone =
-        event?.timezone ||
-        Intl.DateTimeFormat().resolvedOptions().timeZone;
-
-    const timezones =
-        Intl.supportedValuesOf?.("timeZone") ?? [
-            "UTC",
-            "America/New_York",
-            "America/Los_Angeles",
-            "Europe/London",
-            "Asia/Tokyo"
-        ];
-
-    function buildIso(date: string, time: string, timezone: string) {
-        const dt = new Date(`${date}T${time}:00`);
-
-        return new Date(
-            dt.toLocaleString("en-US", { timeZone: timezone })
-        ).toISOString();
-    }
-
-    function handleSave() {
-        onSave({
-            id: event.id,
-            name: newName,
-            timezone: newTimezone,
-            start_at: buildIso(newStartDate, newStartTime, newTimezone),
-            series_id: event.series_id,
-            end_at: buildIso(newEndDate, newEndTime, newTimezone)
-        });
-    }
+  const timezones = Intl.supportedValuesOf?.("timeZone") ?? [
+    "UTC",
+    "America/New_York",
+    "America/Los_Angeles",
+    "Europe/London",
+    "Asia/Tokyo",
+  ];
 </script>
 
-{#if isOpen}
-<div class="fixed inset-0 z-50 flex items-center justify-center">
-    <button class="absolute inset-0 backdrop-blur-sm" onclick={onCancel} aria-label="Close modal"></button>
+<dialog
+  bind:this={dialog}
+  onclose={close}
+  onclick={(e) => {
+    if (e.target === dialog && mouseDownTarget == dialog) close();
+  }}
+  onmousedown={(e) => (mouseDownTarget = e.target)}
+  class="m-auto bg-[#111111] rounded-2xl min-w-2xl backdrop:bg-black/60 backdrop:backdrop-blur-sm"
+>
+  <h1 class="text-white text-2xl font-bold p-4">Editing {draft?.name}</h1>
 
-    <div class="relative bg-slate-900 border border-white/10 rounded-3xl w-full max-w-xl p-8 shadow-2xl">
-        <h3 class="text-2xl font-bold text-white mb-6">
-            {#if event?.name}
-                Editing {event.name}
-            {:else}
-                Creating new event
-            {/if}
-        </h3>
+  <form action="" class="bg-white/5 rounded-2xl mx-6 mb-6 p-4">
+    <fieldset>
+      <legend class="text-white font-bold text-center text-xl"
+        >Event Information</legend
+      >
 
-        <div class="space-y-5">
+      <label for="name" class="text-white flex flex-col mb-1">
+        Name:
+        <input
+          name="name"
+          type="text"
+          class="w-full px-4 py-2 rounded-xl bg-white/5 text-white focus:outline-none mt-1"
+          bind:value={draft.name}
+        />
+      </label>
 
-            <!-- Name -->
-            <div>
-                <label class="text-slate-400 text-sm block mb-1">Event Name
-                    <input
-                        bind:value={newName}
-                        class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white focus:outline-none focus:border-orange-500"
-                    />
-                </label>
-            </div>
+      <label for="startDate" class="text-white flex flex-col mb-1">
+        Starting Date:
+        <input
+          type="date"
+          name="startDate"
+          class="w-full px-4 py-2 rounded-xl bg-white/5 text-white focus:outline-none mt-1"
+          bind:value={draft.start_at}
+        />
+      </label>
 
-            <!-- Start -->
-            <div class="space-y-3">
-                <h4 class="text-white font-semibold">Start Time</h4>
+      <label for="startTime" class="text-white flex flex-col mb-1">
+        Starting Time:
+        <input
+          type="time"
+          name="startTime"
+          class="w-full px-4 py-2 rounded-xl bg-white/5 text-white focus:outline-none mt-1"
+        />
+      </label>
 
-                <input
-                    type="date"
-                    bind:value={newStartDate}
-                    class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                />
+      <label for="endDate" class="text-white flex flex-col mb-1">
+        Ending Date:
+        <input
+          type="date"
+          name="endDate"
+          class="w-full px-4 py-2 rounded-xl bg-white/5 text-white focus:outline-none mt-1"
+          bind:value={draft.end_at}
+        />
+      </label>
 
-                <input
-                    type="time"
-                    bind:value={newStartTime}
-                    class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                />
-            </div>
+      <label for="endTime" class="text-white flex flex-col mb-1">
+        Ending Time:
+        <input
+          type="time"
+          name="endTime"
+          class="w-full px-4 py-2 rounded-xl bg-white/5 text-white focus:outline-none mt-1"
+        />
+      </label>
 
-            <!-- End -->
-            <div class="space-y-3">
-                <h4 class="text-white font-semibold">End Time</h4>
+      <label class="text-gray-500 text-sm block mb-2">
+        Timezone
 
-                <input
-                    type="date"
-                    bind:value={newEndDate}
-                    class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                />
+        <select
+          bind:value={draft.timezone}
+          class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white focus:outline-none focus:border-[#FF8000]/50 transition"
+        >
+          {#each timezones as tz}
+            <option class="text-black" value={tz}>{tz}</option>
+          {/each}
+        </select>
+      </label>
+    </fieldset>
 
-                <input
-                    type="time"
-                    bind:value={newEndTime}
-                    class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                />
-            </div>
-
-            <div class="space-y-3">
-                <h4 class="text-white font-semibold">Event Timezone</h4>
-
-                <select
-                    bind:value={newTimezone}
-                    class="w-full px-4 py-2 rounded-xl bg-slate-800 border border-slate-700 text-white"
-                >
-                    {#each timezones as tz}
-                        <option value={tz}>{tz}</option>
-                    {/each}
-                </select>
-            </div>
-        </div>
-
-        <div class="flex justify-end gap-3 mt-6">
-            <button
-                class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-xl text-white transition"
-                onclick={onCancel}
-            >
-                Cancel
-            </button>
-
-            <button
-                class="px-4 py-2 bg-orange-600 hover:bg-orange-500 rounded-xl text-white transition"
-                onclick={handleSave}
-            >
-                Save
-            </button>
-        </div>
+    <div class="flex justify-end gap-3 pl-2 pt-3">
+      <button
+        type="button"
+        onclick={close}
+        class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded-md text-white cursor-pointer"
+        >Cancel</button
+      >
+      <button
+        type="button"
+        onclick={save(draft)}
+        class="px-4 py-2 bg-orange-600 hover:bg-orange-500 rounded-md text-white cursor-pointer"
+      >
+        Save
+      </button>
     </div>
-</div>
-{/if}
+  </form>
+</dialog>

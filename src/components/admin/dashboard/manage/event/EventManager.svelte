@@ -4,7 +4,7 @@
   import { onMount } from "svelte";
   import EditEventModal from "./EditEventModal.svelte";
 
-  const EVENTS_PER_PAGE = 8;
+  const EVENTS_PER_PAGE = 4;
 
   let loading = $state(false);
   let loadingError = $state(false);
@@ -25,6 +25,21 @@
   );
   let searchQuery = $state("");
   let editingEvent: Event | null = $state(null);
+
+  async function updateEvent(event: Event) {
+    const { data: updatedEvent, error } =
+      await actions.events.updateEvent(event);
+
+    if (error) {
+      console.error(`Failed to update event ${event.id} ${error.message}`);
+      return;
+    }
+
+    allEvents = allEvents.map((_event) =>
+      _event.id == event.id ? { ..._event, ...updatedEvent } : _event,
+    );
+    editingEvent = null;
+  }
 
   onMount(async () => {
     loading = true;
@@ -50,7 +65,7 @@
     name="seriesSearch"
     placeholder="Search events..."
     bind:value={searchQuery}
-    oninput={() => currentPage = 0}
+    oninput={() => (currentPage = 0)}
     class="w-full px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder:text-gray-500 mb-4 focus:outline-none"
   />
 
@@ -98,7 +113,7 @@
               >
               <td class="flex flex-col items-center">
                 <button
-                  onclick={() => editingEvent = pagedEvent}
+                  onclick={() => (editingEvent = pagedEvent)}
                   class="text-white cursor-pointer bg-blue-600 hover:bg-blue-700 rounded-md px-8 py-2 m-2"
                 >
                   Edit
@@ -112,7 +127,7 @@
               </td>
             </tr>
           {/each}
-          {#each Array.from( { length: EVENTS_PER_PAGE - pagedEvents.length } )}
+          {#each Array.from({ length: EVENTS_PER_PAGE - pagedEvents.length })}
             <tr aria-hidden="true" class="border-t border-white/5">
               <td colspan="4" class="h-26"></td>
             </tr>
@@ -147,9 +162,9 @@
 </div>
 
 {#if editingEvent}
-  <EditEventModal 
+  <EditEventModal
     event={editingEvent}
-    save={() => {}}
-    close={() => editingEvent = null}
+    save={updateEvent}
+    close={() => (editingEvent = null)}
   />
 {/if}

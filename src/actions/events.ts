@@ -2,6 +2,7 @@ import { ActionError, defineAction } from "astro:actions";
 import { z } from "astro/zod";
 import * as db from "../database/events";
 import { handleAuthError } from "$lib/supabase";
+import type { Event } from "../database/events";
 
 export default {
   createEvent: defineAction({
@@ -32,14 +33,7 @@ export default {
       await db.getEventsBySeriesId(context, input),
   }),
   updateEvent: defineAction({
-    input: z.object({
-      id: z.string(),
-      name: z.string(),
-      start_at: z.coerce.date(),
-      end_at: z.coerce.date(),
-      series_id: z.string(),
-      timezone: z.string(),
-    }),
+    input: z.custom<Event>(),
     handler: async (input, context) => {
       const { data, error } = await context.locals.supabase.auth.getClaims();
 

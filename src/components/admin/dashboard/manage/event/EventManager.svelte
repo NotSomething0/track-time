@@ -1,9 +1,10 @@
 <script lang="ts">
+  import type { Event, Events } from "../../../../../database/events";
   import { actions } from "astro:actions";
   import { onMount } from "svelte";
-  import type { Events } from "../../../../../database/events";
+  import EditEventModal from "./EditEventModal.svelte";
 
-  const EVENTS_PER_PAGE = 4;
+  const EVENTS_PER_PAGE = 8;
 
   let loading = $state(false);
   let loadingError = $state(false);
@@ -23,6 +24,7 @@
     ),
   );
   let searchQuery = $state("");
+  let editingEvent: Event | null = $state(null);
 
   onMount(async () => {
     loading = true;
@@ -92,17 +94,17 @@
                 </span>
               </td>
               <td class="text-center text-white"
-                >{new Date(pagedEvent.start_at).getTime()}</td
+                >{new Date(pagedEvent.start_at).toLocaleTimeString()}</td
               >
               <td class="flex flex-col items-center">
                 <button
-                  onclick={() => console.log("I want to edit", pagedEvent)}
+                  onclick={() => editingEvent = pagedEvent}
                   class="text-white cursor-pointer bg-blue-600 hover:bg-blue-700 rounded-md px-8 py-2 m-2"
                 >
                   Edit
                 </button>
                 <button
-                  onclick={() => console.log("I want to delete", pagedEvent)}
+                  onclick={() => console.log("I want to delete!")}
                   class="text-white cursor-pointer bg-red-500 hover:bg-red-600 rounded-md px-5 py-2 mb-2"
                 >
                   Delete
@@ -143,3 +145,11 @@
     </table>
   </div>
 </div>
+
+{#if editingEvent}
+  <EditEventModal 
+    event={editingEvent}
+    save={() => {}}
+    close={() => editingEvent = null}
+  />
+{/if}

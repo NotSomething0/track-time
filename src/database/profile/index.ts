@@ -1,1 +1,1 @@
-export { default as followSeriesById } from "./followSeriesById";
+export { followSeriesById } from "./followSeriesById";

@@ -1,16 +1,21 @@
-import { type ActionAPIContext } from "astro:actions";
+import { type ActionAPIContext, ActionError } from "astro:actions";
 import { handleAuthError, handlePostgrestError } from "$lib/supabase";
 
-export default async (
+export async function followSeriesById(
   context: ActionAPIContext,
   series_id: string,
-): Promise<void> => {
+) {
   const {
     data: { user },
     error: authError,
   } = await context.locals.supabase.auth.getUser();
 
   if (authError) handleAuthError(authError);
+  if (!user)
+    throw new ActionError({
+      code: "UNAUTHORIZED",
+      message: "You are not authorized to perform this action.",
+    });
 
   const { error } = await context.locals.supabase
     .from("profile_followed_series")
@@ -20,4 +25,4 @@ export default async (
     );
 
   if (error) handlePostgrestError(error);
-};
+}

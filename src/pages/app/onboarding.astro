@@ -1,0 +1,57 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import DiscoverSeries from "../../components/home/dashboard/onboarding/DiscoverSeries.svelte";
+
+const { data, error } = await Astro.locals.supabase.auth.getUser();
+
+if (!data || error) return Astro.redirect("/login");
+
+const { data: profile, error: profileError } = await Astro.locals.supabase
+  .from("profiles")
+  .select()
+  .eq("user_id", data.user.id)
+  .single();
+
+if (profileError) {
+  console.error(
+    `An error occured while trying to select a users profile ${profileError}`,
+  );
+  return Astro.redirect("login");
+}
+---
+
+<Layout title="Track Time | Welcome">
+  <header
+    class="flex p-4 justify-between bg-black border-b border-white/10 italic"
+  >
+    <a href="/app/onboarding" class="text-4xl font-black tracking-tighter">
+      <span class="text-[#FF2800]">TRACK</span>
+      <span class="text-[#FF8000]">TIME</span>
+    </a>
+  </header>
+
+  <main class="flex flex-col h-screen bg-black">
+    <h2 class="text-white text-2xl font-bold px-4 py-2">
+      Welcome {profile?.username ?? "Unknown"}!
+    </h2>
+
+    <p class="text-white px-4">
+      Your personalized racing calendar is currently empty. Select at least one
+      motorsport series you want to track below, and we'll build a unified,
+      automated schedule converted directly to your local timezone.
+    </p>
+
+    <h3 class="text-xl font-bold">
+      Select at least one series to populate your dashboard timeline.
+    </h3>
+
+    <DiscoverSeries client:load />
+  </main>
+
+  <footer
+    class="bg-black border-t border-white/10 py-6 text-center text-white flex justify-center"
+  >
+    &copy; 2026 Track Time. All trademarks are property of their respective
+    owners in the US and other countries.
+  </footer>
+</Layout>

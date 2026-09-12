@@ -1,0 +1,25 @@
+---
+import Layout from "../../layouts/Layout.astro";
+
+const { data, error } = await Astro.locals.supabase.auth.getClaims();
+
+if (!data || error) Astro.redirect("/login");
+---
+
+<Layout>
+  <header
+    class="flex p-4 justify-between bg-black border-b border-zinc-800 italic"
+  >
+    <a href="/home/dashboard" class="text-4xl font-black tracking-tighter">
+      <span class="text-[#FF2800]">TRACK</span>
+      <span class="text-[#FF8000]">TIME</span>
+    </a>
+  </header>
+  <main class="flex h-screen"></main>
+  <footer class="bg-[#111111] flex justify-center">
+    <p class="text-white p-2">
+      © 2026 Track Time. All rights reserved. All trademarks are property of
+      their respective owners in the US and other countries.
+    </p>
+  </footer>
+</Layout>

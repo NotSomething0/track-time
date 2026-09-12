@@ -1,6 +1,6 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import DiscoverSeries from "../../components/home/dashboard/onboarding/DiscoverSeries.svelte";
+import DiscoverSeries from "../../components/app/onboarding/DiscoverSeries.svelte";
 
 const { data, error } = await Astro.locals.supabase.auth.getUser();
 
@@ -22,7 +22,7 @@ if (profileError) {
 
 <Layout title="Track Time | Welcome">
   <header
-    class="flex p-4 justify-between bg-black border-b border-white/10 italic"
+    class="flex p-4 justify-between bg-[#111111] border-b border-white/10 italic"
   >
     <a href="/app/onboarding" class="text-4xl font-black tracking-tighter">
       <span class="text-[#FF2800]">TRACK</span>
@@ -30,26 +30,21 @@ if (profileError) {
     </a>
   </header>
 
-  <main class="flex flex-col h-screen bg-black">
+  <main class="flex flex-col h-screen bg-[#111111]">
     <h2 class="text-white text-2xl font-bold px-4 py-2">
       Welcome {profile?.username ?? "Unknown"}!
     </h2>
 
     <p class="text-white px-4">
       Your personalized racing calendar is currently empty. Select at least one
-      motorsport series you want to track below, and we'll build a unified,
-      automated schedule converted directly to your local timezone.
+      motorsport series you want to track below.
     </p>
-
-    <h3 class="text-xl font-bold">
-      Select at least one series to populate your dashboard timeline.
-    </h3>
 
     <DiscoverSeries client:load />
   </main>
 
   <footer
-    class="bg-black border-t border-white/10 py-6 text-center text-white flex justify-center"
+    class="bg-[#111111] border-t border-white/10 py-6 text-center text-white flex justify-center"
   >
     &copy; 2026 Track Time. All trademarks are property of their respective
     owners in the US and other countries.
